@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+	http://www.springframework.org/schema/aop
+	http://www.springframework.org/schema/aop/spring-aop.xsd
+	http://www.springframework.org/schema/tx
+    http://www.springframework.org/schema/tx/spring-tx.xsd">
+    
+    <import resource="classpath*:spring/persuasionapi-core-config.xml" />
+
+	<context:component-scan base-package="osu.ceti.persuasionapi">
+	  <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+	</context:component-scan>
+	
+	<bean id="activemqConnectionFactory" class="org.apache.activemq.ActiveMQConnectionFactory">
+		<property name="brokerURL">
+			<value>tcp://localhost:61616</value>
+		</property>
+	</bean>
+	
+	<!-- ConnectionFactory Definition -->
+    <bean id="connectionFactory" class="org.springframework.jms.connection.CachingConnectionFactory">
+        <constructor-arg ref="activemqConnectionFactory" />
+    </bean>
+	
+	<bean id="badgeRuleProcessingQueue" class="org.apache.activemq.command.ActiveMQQueue">
+		<constructor-arg value="osu.ceti.persuasionapi.internal.activityreported" />
+	</bean>
+
+	<bean id="badgeRuleProcessingJMSTemplate" class="org.springframework.jms.core.JmsTemplate">
+		<property name="connectionFactory" ref="activemqConnectionFactory" />
+		<property name="defaultDestination" ref="badgeRuleProcessingQueue" />
+	</bean>
+	
+	<!-- Message Receiver Definition -->
+    <bean id="badgeRuleProcessingListener" class="osu.ceti.persuasionapi.async.listeners.BadgeRuleProcessingListener">
+    </bean>
+ 
+    <bean class="org.springframework.jms.listener.SimpleMessageListenerContainer">
+        <property name="connectionFactory" ref="connectionFactory" />
+        <property name="destinationName" value="osu.ceti.persuasionapi.internal.activityreported" />
+        <property name="messageListener" ref="badgeRuleProcessingListener" />
+    </bean>
+
+	<!-- <bean id="activityOperations" class="osu.ceti.persuasionapi.core.badges.ActivityOperations">
+		<property name="jmsQueue" ref="badgeRuleProcessingJMSTemplate" />
+	</bean> -->
+
+</beans>

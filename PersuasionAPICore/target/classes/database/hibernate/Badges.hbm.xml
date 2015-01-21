@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated Dec 9, 2014 10:38:26 PM by Hibernate Tools 3.4.0.CR1 -->
+<hibernate-mapping>
+    <class name="osu.ceti.persuasionapi.data.model.Badges" table="badges" catalog="persuasion_api">
+        <id name="badgeId" type="java.lang.Integer">
+            <column name="badge_id" />
+            <generator class="identity" />
+        </id>
+        <property name="badgeClass" type="string">
+            <column name="badge_class" length="50" not-null="true" />
+        </property>
+        <property name="badgeLevel" type="int">
+            <column name="badge_level" not-null="true" />
+        </property>
+        <property name="badgeName" type="string">
+            <column name="badge_name" length="50" not-null="true" />
+        </property>
+        <property name="badgeDesc" type="string">
+            <column name="badge_desc" />
+        </property>
+        <property name="image" type="binary">
+            <column name="image" />
+        </property>
+        <property name="emailMsg" type="string">
+            <column name="email_msg" length="65535" />
+        </property>
+        <property name="publicRecognition" type="string">
+            <column name="public_recognition" length="65535" />
+        </property>
+        <set name="userBadgeMappingses" table="user_badge_mappings" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="badge_id" />
+            </key>
+            <one-to-many class="osu.ceti.persuasionapi.data.model.UserBadgeMappings" />
+        </set>
+        <set name="badgeRuleMappingses" table="badge_rule_mappings" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="badge_id" />
+            </key>
+            <one-to-many class="osu.ceti.persuasionapi.data.model.BadgeRuleMappings" />
+        </set>
+    </class>
+</hibernate-mapping>

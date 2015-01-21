@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated Dec 9, 2014 10:38:26 PM by Hibernate Tools 3.4.0.CR1 -->
+<hibernate-mapping>
+    <class name="osu.ceti.persuasionapi.data.model.Activities" table="activities" catalog="persuasion_api">
+        <id name="activityId" type="java.lang.Integer">
+            <column name="activity_id" />
+            <generator class="identity" />
+        </id>
+        <property name="activityName" type="string">
+            <column name="activity_name" length="30" not-null="true" unique="true" />
+        </property>
+        <property name="activityDesc" type="string">
+            <column name="activity_desc" />
+        </property>
+        <set name="activityLogs" table="activity_log" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="activity_id" />
+            </key>
+            <one-to-many class="osu.ceti.persuasionapi.data.model.ActivityLog" />
+        </set>
+    </class>
+</hibernate-mapping>
