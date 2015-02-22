@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated Feb 20, 2015 6:52:33 PM by Hibernate Tools 3.4.0.CR1 -->
+<hibernate-mapping>
+    <class name="osu.ceti.persuasionapi.data.model.RuleAction" table="rule_action" catalog="persuasion_api">
+        <id name="ruleId" type="int">
+            <column name="rule_id" />
+            <generator class="assigned" />
+        </id>
+        <many-to-one name="badge" class="osu.ceti.persuasionapi.data.model.Badge" fetch="select">
+            <column name="badge_id" />
+        </many-to-one>
+        <property name="emailMsg" type="string">
+            <column name="email_msg" length="65535" />
+        </property>
+        <property name="socialUpdate" type="string">
+            <column name="social_update" length="65535" />
+        </property>
+        <property name="notifyAlways" type="java.lang.Boolean">
+            <column name="notify_always" />
+        </property>
+    </class>
+</hibernate-mapping>

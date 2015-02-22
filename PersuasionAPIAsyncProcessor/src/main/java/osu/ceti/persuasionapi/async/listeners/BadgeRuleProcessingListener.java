@@ -17,7 +17,7 @@ import osu.ceti.persuasionapi.async.BadgeRuleProcessor;
 import osu.ceti.persuasionapi.core.exceptions.PersuasionAPIException;
 import osu.ceti.persuasionapi.core.helpers.Constants;
 import osu.ceti.persuasionapi.core.helpers.StringHelper;
-import osu.ceti.persuasionapi.data.access.UserBadgeMappingsDAO;
+import osu.ceti.persuasionapi.data.access.UserBadgeMappingDAO;
 
 /**
  * Listener for user activity log update messages
@@ -29,26 +29,24 @@ public class BadgeRuleProcessingListener implements MessageListener {
 	
 	private static final Log log = LogFactory.getLog(BadgeRuleProcessingListener.class);
 	
-	@Autowired UserBadgeMappingsDAO userBadgeMappingsDAO;
+	@Autowired UserBadgeMappingDAO userBadgeMappingDAO;
 	@Autowired BadgeRuleProcessor badgeRuleProcessor;
 	
 	/**
-	 * Listens to user activity update messages and triggers badge processing
+	 * Listens to user activity/attribute update messages and triggers rule processing
 	 */
 	@Transactional
 	public void onMessage(Message message) {
-		System.out.println("Message received");
-		
 		if(message instanceof MapMessage) {
 			final MapMessage mapMessage = (MapMessage) message;
 			try {
 				String userId = mapMessage.getString(Constants.USER_ID);
-				System.out.println(mapMessage.getString(Constants.USER_ID));
 				
 				String dateString = mapMessage.getString(Constants.TIMESTAMP);
 				Date messageTimeStamp = StringHelper.toDateFromCharString(dateString);
 				
-				Date userBadgeLastProcessedTime = userBadgeMappingsDAO
+				//TODO: Create a new time log and use it instead of badge processing
+				Date userBadgeLastProcessedTime = userBadgeMappingDAO
 						.getLastProcessedTimeForUser(userId);
 				
 				if(userBadgeLastProcessedTime == null
@@ -59,10 +57,10 @@ public class BadgeRuleProcessingListener implements MessageListener {
 					log.debug("Already processed. Skipping update");
 				}
 			} catch (JMSException e) {
-				log.error("Failed to decipher activity update message"
+				log.error("Failed to decipher activity/attribute update message"
 						+ ". Stop processing current message");
 			} catch (PersuasionAPIException e) {
-				log.error("Failed to process badge rules. Stop processing current message");
+				log.error("Failed to process rules. Stop processing current message");
 			} catch (Exception e) {
 				log.error("Caught exception while processing current message"
 						+ ". Exception type: " + e.getClass().getName()
@@ -71,7 +69,7 @@ public class BadgeRuleProcessingListener implements MessageListener {
 				log.info("Stop processing current message");
 			}
 		} else {
-			log.error("Failed to decipher activity update message"
+			log.error("Failed to decipher activity/attribute update message"
 					+ ". Stop processing current message");
 		}
 	}

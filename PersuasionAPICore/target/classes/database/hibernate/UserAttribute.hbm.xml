@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated Feb 12, 2015 1:50:42 PM by Hibernate Tools 3.4.0.CR1 -->
+<hibernate-mapping>
+    <class name="osu.ceti.persuasionapi.data.model.UserAttribute" table="user_attribute" catalog="persuasion_api">
+        <id name="attributeName" type="string">
+            <column name="attribute_name" />
+            <generator class="assigned" />
+        </id>
+        <property name="attributeDesc" type="string">
+            <column name="attribute_desc" />
+        </property>
+        <set name="ruleComparisons" table="rule_comparison" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="attribute_name" />
+            </key>
+            <one-to-many class="osu.ceti.persuasionapi.data.model.RuleComparison" />
+        </set>
+        <set name="userAttributeValues" table="user_attribute_value" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="attribute_name" not-null="true" />
+            </key>
+            <one-to-many class="osu.ceti.persuasionapi.data.model.UserAttributeValue" />
+        </set>
+    </class>
+</hibernate-mapping>

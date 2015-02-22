@@ -11,8 +11,8 @@ import osu.ceti.persuasionapi.core.helpers.InternalErrorCodes;
 import osu.ceti.persuasionapi.core.operations.ActivityLogOperations;
 import osu.ceti.persuasionapi.core.operations.ActivityOperations;
 import osu.ceti.persuasionapi.core.operations.UserOperations;
-import osu.ceti.persuasionapi.data.model.Activities;
-import osu.ceti.persuasionapi.data.model.Users;
+import osu.ceti.persuasionapi.data.model.Activity;
+import osu.ceti.persuasionapi.data.model.User;
 
 @Service
 @Transactional
@@ -35,12 +35,12 @@ public class ActivityServices {
 		try {
 			//TODO(Future Work): Might want to change this to throw error if user 
 			//is not available
-			Users user = userOperations.findOrCreateUser(userId, null);
+			User user = userOperations.findOrCreateUser(userId);
 
 			//Check for activity and create if not available
 			//TODO(Future Work): Might want to change this to throw error if activity 
 			//is not available
-			Activities activity = activityOperations.findOrCreateActivity(activityName);
+			Activity activity = activityOperations.findOrCreateActivity(activityName);
 
 			//Log the activity
 			activityLogOperations.logUserActivity(user, activity, value);

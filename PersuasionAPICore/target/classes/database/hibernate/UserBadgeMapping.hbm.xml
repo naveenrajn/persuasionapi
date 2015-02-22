@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated Feb 12, 2015 1:50:42 PM by Hibernate Tools 3.4.0.CR1 -->
+<hibernate-mapping>
+    <class name="osu.ceti.persuasionapi.data.model.UserBadgeMapping" table="user_badge_mapping" catalog="persuasion_api">
+        <composite-id name="id" class="osu.ceti.persuasionapi.data.model.UserBadgeMappingId">
+            <key-many-to-one name="user" class="osu.ceti.persuasionapi.data.model.User">
+                <column name="user_id" />
+            </key-many-to-one>
+            <key-property name="badgeClass" type="string">
+                <column name="badge_class" length="50" />
+            </key-property>
+        </composite-id>
+        <many-to-one name="badge" class="osu.ceti.persuasionapi.data.model.Badge" fetch="select">
+            <column name="badge_id" not-null="true" />
+        </many-to-one>
+        <property name="processedTime" type="timestamp">
+            <column name="processed_time" length="0" not-null="true" />
+        </property>
+    </class>
+</hibernate-mapping>

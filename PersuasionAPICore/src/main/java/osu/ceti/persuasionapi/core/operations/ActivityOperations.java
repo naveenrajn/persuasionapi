@@ -7,15 +7,15 @@ import org.springframework.stereotype.Component;
 
 import osu.ceti.persuasionapi.core.exceptions.PersuasionAPIException;
 import osu.ceti.persuasionapi.core.helpers.InternalErrorCodes;
-import osu.ceti.persuasionapi.data.access.ActivitiesDAO;
-import osu.ceti.persuasionapi.data.model.Activities;
+import osu.ceti.persuasionapi.data.access.ActivityDAO;
+import osu.ceti.persuasionapi.data.model.Activity;
 
 @Component
 public class ActivityOperations {
 	
 	private static final Log log = LogFactory.getLog(ActivityOperations.class);
 	
-	@Autowired private ActivitiesDAO activitiesDAO;
+	@Autowired private ActivityDAO activityDAO;
 	
 	/**
 	 * Lookups the database to find the activity with the given name
@@ -23,8 +23,8 @@ public class ActivityOperations {
 	 * @return activity handle if found, throw exception if not
 	 * @throws PersuasionAPIException 
 	 */
-	public Activities lookupActivity(String activityName) throws PersuasionAPIException {
-		return activitiesDAO.findbyActivityName(activityName);
+	public Activity lookupActivity(String activityName) throws PersuasionAPIException {
+		return activityDAO.findById(activityName);
 	}
 	
 	/**
@@ -35,7 +35,7 @@ public class ActivityOperations {
 	 * @return created activity handle
 	 * @throws PersuasionAPIException 
 	 */
-	public Activities createNewActivity(String activityName, 
+	public Activity createNewActivity(String activityName, 
 			String activityDescription) throws PersuasionAPIException {
 		
 		if(activityName == null) {
@@ -43,16 +43,16 @@ public class ActivityOperations {
 					"Activity name cannot be empty to create a new activity");
 		}
 		
-		Activities activity = lookupActivity(activityName);
+		Activity activity = lookupActivity(activityName);
 		if(activity != null) {
 			throw new PersuasionAPIException(InternalErrorCodes.GENERATED_EXCEPTION,
 					"Activity " + activityName + " already available. Cannot create a new "
 							+ "activity with the same name");
 		}
 		
-		activity = new Activities(activityName);
+		activity = new Activity(activityName);
 		activity.setActivityDesc(activityDescription);
-		activitiesDAO.persist(activity);
+		activityDAO.persist(activity);
 		
 		return activity;
 	}
@@ -65,8 +65,8 @@ public class ActivityOperations {
 	 * @return created or looked up activity handle
 	 * @throws PersuasionAPIException 
 	 */
-	public Activities findOrCreateActivity(String activityName) throws PersuasionAPIException {
-		Activities activity = lookupActivity(activityName);
+	public Activity findOrCreateActivity(String activityName) throws PersuasionAPIException {
+		Activity activity = lookupActivity(activityName);
 
 		if(activity == null) {
 			//TODO: Possible second call to lookupActivity(). Modify this to reduce a call

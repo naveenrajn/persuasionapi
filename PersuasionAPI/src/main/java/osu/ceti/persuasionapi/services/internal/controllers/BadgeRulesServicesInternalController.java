@@ -5,6 +5,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import osu.ceti.persuasionapi.services.wrappers.RestServiceRequest;
+
 @Controller
 @RequestMapping("/badges")
 public class BadgeRulesServicesInternalController {
@@ -14,4 +16,9 @@ public class BadgeRulesServicesInternalController {
 	public void createBadgeRuleMapping() {
 		
 	}
+	
+	public void updateBadgeRuleMappings(RestServiceRequest request) {
+		
+	}
+	
 }

@@ -19,6 +19,15 @@ public class StringHelper {
 	}
 	
 	/**
+	 * Check if the given input string is null or contains an empty value
+	 * @param stringToVerify
+	 * @return true if the string contains value; false if null or empty
+	 */
+	public static boolean isEmpty(String stringToVerify) {
+		return !isNotEmpty(stringToVerify);
+	}
+	
+	/**
 	 * Converts a date object to String of the format yyyy-MM-dd HH:mm:ss
 	 * @param dateToBeConverted
 	 * @return converted date string

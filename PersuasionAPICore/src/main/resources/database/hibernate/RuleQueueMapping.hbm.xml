@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated Feb 20, 2015 8:26:25 PM by Hibernate Tools 3.4.0.CR1 -->
+<hibernate-mapping>
+    <class name="osu.ceti.persuasionapi.data.model.RuleQueueMapping" table="rule_queue_mapping" catalog="persuasion_api">
+        <composite-id name="id" class="osu.ceti.persuasionapi.data.model.RuleQueueMappingId">
+            <key-many-to-one name="rule" class="osu.ceti.persuasionapi.data.model.Rule">
+                <column name="rule_id" />
+            </key-many-to-one>
+            <key-property name="queueName" type="string">
+                <column name="queue_name" />
+            </key-property>
+        </composite-id>
+    </class>
+</hibernate-mapping>

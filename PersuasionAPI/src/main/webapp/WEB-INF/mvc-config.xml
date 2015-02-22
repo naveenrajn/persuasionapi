@@ -10,8 +10,7 @@
 	  <context:include-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
 	</context:component-scan>
 
-
-    <mvc:annotation-driven />
+	<mvc:annotation-driven />
 
 	<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
 	        <!-- Example: a logical view name of 'showMessage' is mapped to '/WEB-INF/jsp/showMessage.jsp' -->
@@ -30,6 +29,7 @@
      
     <!-- Configure bean to convert JSON to POJO and vice versa -->
     <bean id="jsonMessageConverter" class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
+    	<property name="supportedMediaTypes" value="application/json"/>
     </bean> 
-	
+    
 </beans>

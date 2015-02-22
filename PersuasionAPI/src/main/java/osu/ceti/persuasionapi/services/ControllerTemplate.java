@@ -4,10 +4,13 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import osu.ceti.persuasionapi.core.exceptions.PersuasionAPIException;
-import osu.ceti.persuasionapi.services.wrappers.RestServiceResponse;
 
 public class ControllerTemplate {
 
+	/**
+	 * Generates a success response
+	 * @return success response
+	 */
 	public RestServiceResponse successResponse() {
 		//TODO: Verify if this creates a logger using the derived class' instance
 		Log log = LogFactory.getLog(getClass());
@@ -21,11 +24,16 @@ public class ControllerTemplate {
 		}
 	}
 
-	public RestServiceResponse successResponse(Object content) {
+	/**
+	 * Generates a success response with the given response data
+	 * @param data
+	 * @return success resposne with data
+	 */
+	public RestServiceResponse successResponse(Object data) {
 		Log log = LogFactory.getLog(getClass());
 		try {
 			RestServiceResponse response = successResponse();
-			response.setContent(content);
+			response.setData(data);
 			return response;
 		} catch(PersuasionAPIException e) {
 			log.error("Service call complete. Failed to create RestServiceResponse Object");
@@ -34,6 +42,12 @@ public class ControllerTemplate {
 		}
 	}
 
+	/**
+	 * Generates a failure response
+	 * @param errorCode
+	 * @param errorMessage
+	 * @return failure response
+	 */
 	public RestServiceResponse failureResponse(String errorCode, String errorMessage) {
 		Log log = LogFactory.getLog(getClass());
 		try {

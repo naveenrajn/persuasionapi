@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated Feb 12, 2015 1:50:42 PM by Hibernate Tools 3.4.0.CR1 -->
+<hibernate-mapping>
+    <class name="osu.ceti.persuasionapi.data.model.RuleComparison" table="rule_comparison" catalog="persuasion_api">
+        <id name="ruleCompId" type="java.lang.Integer">
+            <column name="rule_comp_id" />
+            <generator class="identity" />
+        </id>
+        <many-to-one name="activity" class="osu.ceti.persuasionapi.data.model.Activity" fetch="select">
+            <column name="activity_name" />
+        </many-to-one>
+        <many-to-one name="userAttribute" class="osu.ceti.persuasionapi.data.model.UserAttribute" fetch="select">
+            <column name="attribute_name" />
+        </many-to-one>
+        <many-to-one name="rule" class="osu.ceti.persuasionapi.data.model.Rule" fetch="select">
+            <column name="rule_id" />
+        </many-to-one>
+        <many-to-one name="ruleComparator" class="osu.ceti.persuasionapi.data.model.RuleComparator" fetch="select">
+            <column name="comparator" length="30" not-null="true" />
+        </many-to-one>
+        <property name="featureType" type="string">
+            <column name="feature_type" length="30" not-null="true" />
+        </property>
+        <property name="value" type="string">
+            <column name="value" not-null="true" />
+        </property>
+    </class>
+</hibernate-mapping>

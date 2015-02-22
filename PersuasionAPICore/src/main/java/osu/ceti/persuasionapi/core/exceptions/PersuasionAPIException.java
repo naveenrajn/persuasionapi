@@ -25,7 +25,7 @@ public class PersuasionAPIException extends Exception {
 	}
 
 	public String toString() {
-		return null;
+		return errorCode + ": " + getMessage();
 	}
 
 }

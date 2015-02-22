@@ -46,8 +46,4 @@
         <property name="messageListener" ref="badgeRuleProcessingListener" />
     </bean>
 
-	<!-- <bean id="activityOperations" class="osu.ceti.persuasionapi.core.badges.ActivityOperations">
-		<property name="jmsQueue" ref="badgeRuleProcessingJMSTemplate" />
-	</bean> -->
-
 </beans>

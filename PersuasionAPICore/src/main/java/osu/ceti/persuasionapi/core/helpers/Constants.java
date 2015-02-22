@@ -4,7 +4,7 @@ public class Constants {
 
 	//Constants used for fields in the internal JMS messages
 	public static final String USER_ID = "user_id";
-	public static final String ACTIVITY_ID = "activity_id";
+	public static final String ACTIVITY_NAME = "activity_name";
 	public static final String TIMESTAMP = "timestamp";
 	
 	//Constants used by badge rule comparison logic

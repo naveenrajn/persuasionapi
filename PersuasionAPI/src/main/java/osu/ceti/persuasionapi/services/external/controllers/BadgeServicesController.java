@@ -1,64 +1,100 @@
 package osu.ceti.persuasionapi.services.external.controllers;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import osu.ceti.persuasionapi.core.exceptions.DatabaseException;
 import osu.ceti.persuasionapi.core.exceptions.PersuasionAPIException;
-import osu.ceti.persuasionapi.data.model.UserBadgeMappings;
+import osu.ceti.persuasionapi.data.model.Badge;
 import osu.ceti.persuasionapi.services.ControllerTemplate;
+import osu.ceti.persuasionapi.services.RestServiceResponse;
 import osu.ceti.persuasionapi.services.external.BadgeServices;
-import osu.ceti.persuasionapi.services.internal.wrappers.UserBadgeResponse;
-import osu.ceti.persuasionapi.services.wrappers.RestServiceResponse;
+import osu.ceti.persuasionapi.services.wrappers.GetUserBadgeRequest;
+import osu.ceti.persuasionapi.services.wrappers.GetUserBadgeResponse;
+import osu.ceti.persuasionapi.services.wrappers.RestServiceRequest;
 
 @Controller
 @RequestMapping("/badges")
 public class BadgeServicesController extends ControllerTemplate {
 	
-	private static final Log log = LogFactory.getLog(ActivityServicesController.class);
-	
 	@Autowired BadgeServices badgeServices;
 	
 	/**
 	 * Fetches and returns the current badge level for the user for a given badge class
-	 * @param userId
-	 * @param badgeClass
-	 * @return
+	 * @param request
+	 * @return badge corresponding to userId and badgeClass
 	 * @throws DatabaseException 
 	 */
-	@RequestMapping(value="/report", method=RequestMethod.POST)
+	@RequestMapping(value="/getUserBadgeForClass", method=RequestMethod.POST)
 	@ResponseBody
-	public RestServiceResponse getUserBadgeForBadgeClass(
-			@RequestParam(value="user_id", required=true) String userId,
-			@RequestParam(value="badge_class", required=true) String badgeClass) {
+	public RestServiceResponse getUserBadgeForBadgeClass(@RequestBody RestServiceRequest<GetUserBadgeRequest> request) {
 		try {
-			UserBadgeMappings userBadgeMapping = badgeServices
-					.getUserBadgeForBadgeClass(userId, badgeClass);
+			//TODO: Add authentication
+			GetUserBadgeRequest requestData = request.getData();
+			Badge badge = badgeServices.getUserBadgeForBadgeClass(requestData.getUserId(), 
+					requestData.getBadgeClass());
 			
-			//TODO: Handle exception according to API error handling mechanism
-			if(userBadgeMapping == null) {
-				String errorMessage = "No badge assigned for user " + userId
-						+ " for class " + badgeClass;
-				failureResponse("1001", errorMessage);
+			if(badge == null) {
+				String errorMessage = "No badge assigned for user " + requestData.getUserId()
+						+ " for class " + requestData.getBadgeClass();
+				return failureResponse("1001", errorMessage);
 			}
 			
-			UserBadgeResponse responseContent = new UserBadgeResponse();
-			responseContent.setUser_id(userId);
-			responseContent.setBadge_class(badgeClass);
-			responseContent.setBadge_level(String.valueOf(userBadgeMapping.getBadges().getBadgeLevel()));
-			responseContent.setBadge_name(userBadgeMapping.getBadges().getBadgeName());
-			//TODO: Change this to return badge URL after modifying the database column from BLOB to string
-			responseContent.setBadge_image("");
-			
+			GetUserBadgeResponse responseContent = 
+					mapBadgeToResponse(requestData.getUserId(), badge);
+					
 			return successResponse(responseContent);
 		} catch (PersuasionAPIException e) {
 			return failureResponse("1001", e);
 		}
+	}
+	
+	/**
+	 * Fetches and returns all badges for a given user
+	 * @param request
+	 * @return list of badges the user has
+	 */
+	@RequestMapping(value="/getAllBadgesForUser", method=RequestMethod.POST)
+	@ResponseBody
+	public RestServiceResponse getAllBadgesForUser(@RequestBody RestServiceRequest<String> request) {
+		try {
+			//TODO: Add authentication
+			String userId = request.getData();
+			List<Badge> badgesList = badgeServices.getAllBadgesForUser(userId);
+			List<GetUserBadgeResponse> responseData = new ArrayList<GetUserBadgeResponse>();
+			for(Badge badge : badgesList) {
+				responseData.add(mapBadgeToResponse(userId, badge));
+			}
+			return successResponse(responseData);
+		} catch(PersuasionAPIException e) {
+			return failureResponse("1001", e);
+		}
+	}
+	
+	/**
+	 * Helper mapping model class Badge to response wrapper class
+	 * @param userId
+	 * @param badge
+	 * @return mapped wrapper object
+	 */
+	private GetUserBadgeResponse mapBadgeToResponse(String userId, Badge badge) {
+		GetUserBadgeResponse response = new GetUserBadgeResponse();
+		
+		response.setUserId(userId);
+		response.setBadgeClass(badge.getBadgeClass());
+		response.setBadgeLevel(badge.getBadgeLevel());
+		response.setBadgeName(badge.getBadgeName());
+		response.setBadgeDesc(badge.getBadgeDesc());
+		//TODO: Change this to return Badge Image URL after modifying so in the database
+		response.setImage(badge.getImage());
+		
+		return response;
 	}
 }

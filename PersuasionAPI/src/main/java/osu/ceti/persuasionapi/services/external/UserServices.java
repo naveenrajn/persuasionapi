@@ -9,7 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import osu.ceti.persuasionapi.core.exceptions.PersuasionAPIException;
 import osu.ceti.persuasionapi.core.helpers.InternalErrorCodes;
 import osu.ceti.persuasionapi.core.operations.UserOperations;
-import osu.ceti.persuasionapi.data.model.Users;
+import osu.ceti.persuasionapi.data.model.User;
 
 @Service
 @Transactional
@@ -19,10 +19,15 @@ public class UserServices {
 
 	@Autowired private UserOperations userOperations;
 
-	public void createUser(String userId, String userType) throws PersuasionAPIException {
+	/**
+	 * Creates a new user with the given userId. Do nothing if the user already exists
+	 * @param userId
+	 * @throws PersuasionAPIException
+	 */
+	public void createUser(String userId) throws PersuasionAPIException {
 		try {
 			//TODO(Future Work): Might want to change this to throw error if user is already available
-			Users user = userOperations.findOrCreateUser(userId, userType);
+			User user = userOperations.findOrCreateUser(userId);
 
 			//TODO: Handle this exception appropriately after define API error handling mechanism
 			//Also, we might want to catch and handle the error thrown by findOrCreateUser() method

@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated Feb 12, 2015 1:50:42 PM by Hibernate Tools 3.4.0.CR1 -->
+<hibernate-mapping>
+    <class name="osu.ceti.persuasionapi.data.model.UserAttributeValue" table="user_attribute_value" catalog="persuasion_api">
+        <composite-id name="id" class="osu.ceti.persuasionapi.data.model.UserAttributeValueId">
+            <key-many-to-one name="user" class="osu.ceti.persuasionapi.data.model.User">
+                <column name="user_id" />
+            </key-many-to-one>
+            <key-many-to-one name="userAttribute" class="osu.ceti.persuasionapi.data.model.UserAttribute">
+                <column name="attribute_name" />
+            </key-many-to-one>
+        </composite-id>
+        <property name="value" type="string">
+            <column name="value" length="65535" not-null="true" />
+        </property>
+        <property name="logTime" type="timestamp">
+            <column name="log_time" length="0" not-null="true" />
+        </property>
+    </class>
+</hibernate-mapping>

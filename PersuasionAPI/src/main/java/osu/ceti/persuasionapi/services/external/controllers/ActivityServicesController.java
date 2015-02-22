@@ -1,18 +1,18 @@
 package osu.ceti.persuasionapi.services.external.controllers;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import osu.ceti.persuasionapi.core.exceptions.PersuasionAPIException;
 import osu.ceti.persuasionapi.services.ControllerTemplate;
+import osu.ceti.persuasionapi.services.RestServiceResponse;
 import osu.ceti.persuasionapi.services.external.ActivityServices;
-import osu.ceti.persuasionapi.services.wrappers.RestServiceResponse;
+import osu.ceti.persuasionapi.services.wrappers.ReportActivityRequest;
+import osu.ceti.persuasionapi.services.wrappers.RestServiceRequest;
 
 /**
  * Controller for ActivityServices
@@ -24,8 +24,6 @@ import osu.ceti.persuasionapi.services.wrappers.RestServiceResponse;
 //TODO: Might want to change the necessary methods to POST
 public class ActivityServicesController extends ControllerTemplate {
 
-	private static final Log log = LogFactory.getLog(ActivityServicesController.class);
-
 	@Autowired ActivityServices activityServices;
 
 	/**
@@ -35,25 +33,19 @@ public class ActivityServicesController extends ControllerTemplate {
 	 * @param value
 	 * @throws PersuasionAPIException 
 	 */
-	@RequestMapping(value="/report", method=RequestMethod.GET)
+	@RequestMapping(value="/report", method=RequestMethod.POST, headers = {"Content-type=application/json"})
 	@ResponseBody
 	public RestServiceResponse reportUserActivity(
-			@RequestParam(value="user_id", required=true) String userId,
-			@RequestParam(value="activity_name", required=true) String activityName,
-			@RequestParam(value="value", required=false, defaultValue="1") String value
-			) {
+			@RequestBody RestServiceRequest<ReportActivityRequest> request) {
 		try {
-			activityServices.reportUserActivity(userId, activityName, value);
+			ReportActivityRequest requestData = (ReportActivityRequest) request.getData();
+			//ReportActivityRequest requestData = request;
+			activityServices.reportUserActivity(requestData.getUserId(), 
+					requestData.getActivityName(), requestData.getValue());
 			return successResponse();
 		} catch(PersuasionAPIException e) {
 			return failureResponse("1001", e);
 		}
-	}
-
-	@RequestMapping(value="/create", method=RequestMethod.GET)
-	@ResponseBody
-	public void createActivity() {
-
 	}
 
 }

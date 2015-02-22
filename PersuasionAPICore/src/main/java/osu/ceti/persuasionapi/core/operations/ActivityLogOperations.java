@@ -17,10 +17,10 @@ import osu.ceti.persuasionapi.core.helpers.InternalErrorCodes;
 import osu.ceti.persuasionapi.core.helpers.JMSMessageSender;
 import osu.ceti.persuasionapi.core.helpers.StringHelper;
 import osu.ceti.persuasionapi.data.access.ActivityLogDAO;
-import osu.ceti.persuasionapi.data.model.Activities;
+import osu.ceti.persuasionapi.data.model.Activity;
 import osu.ceti.persuasionapi.data.model.ActivityLog;
 import osu.ceti.persuasionapi.data.model.ActivityLogId;
-import osu.ceti.persuasionapi.data.model.Users;
+import osu.ceti.persuasionapi.data.model.User;
 
 @Component
 public class ActivityLogOperations {
@@ -39,19 +39,19 @@ public class ActivityLogOperations {
 	 * @return the inserted/updated ActivityLog object from the database
 	 * @throws PersuasionAPIException
 	 */
-	public ActivityLog logUserActivity(Users user, Activities activity, 
+	public ActivityLog logUserActivity(User user, Activity activity, 
 			String value) throws PersuasionAPIException {
 
 		ActivityLog activityLog = null;
 		try {
 			//Create the composite Activity Log object
 			ActivityLogId activityLogId = new ActivityLogId();
-			activityLogId.setUsers(user);
-			activityLogId.setActivities(activity);
+			activityLogId.setUser(user);
+			activityLogId.setActivity(activity);
 
 			try {
 				log.debug("Searching for user an existing activity log entry for userId " 
-						+ user.getUserId() + " and activityId " + activity.getActivityId());
+						+ user.getUserId() + " and activityName " + activity.getActivityName());
 				activityLog = activityLogDAO.findById(activityLogId);
 				log.debug("Found existing user activity log entry. Incrementing the counter");
 				activityLog.setCount(activityLog.getCount()+1); //Increment the counter
@@ -75,7 +75,7 @@ public class ActivityLogOperations {
 		} catch(Exception e) {
 			log.error("Caught exception while logging user activity."
 					+ " User ID: " + user.getUserId()
-					+ " . Activity ID: " + activity.getActivityId()
+					+ " . Activity Name: " + activity.getActivityName()
 					+ " Exception type: " + e.getClass().getName()
 					+ " Exception message: " + e.getMessage());
 			log.debug(StringHelper.stackTraceToString(e));
@@ -87,18 +87,16 @@ public class ActivityLogOperations {
 			//Post the update to the JMS Queue
 			Map<String, String> activityLogUpdate = new HashMap<String, String>();
 			activityLogUpdate.put(Constants.USER_ID, user.getUserId());
-			activityLogUpdate.put(Constants.ACTIVITY_ID, activity.getActivityId().toString());
+			activityLogUpdate.put(Constants.ACTIVITY_NAME, activity.getActivityName().toString());
 
 			String logDate = StringHelper.dateToString(activityLog.getLogTime());
 			activityLogUpdate.put(Constants.TIMESTAMP, logDate);
-
-			System.out.println(jmsQueue);
 
 			jmsMessageSender.sendJMSMessage(jmsQueue, activityLogUpdate);
 		} catch(Exception e) {
 			log.error("Caught exception while posting user activity to JMS."
 					+ " User ID: " + user.getUserId()
-					+ " . Activity ID: " + activity.getActivityId()
+					+ " . Activity Name: " + activity.getActivityName()
 					+ " Exception type: " + e.getClass().getName()
 					+ " Exception message: " + e.getMessage());
 			log.debug(StringHelper.stackTraceToString(e));
@@ -114,14 +112,14 @@ public class ActivityLogOperations {
 	 * @return List of ActivityLog entries indexed by activityId in a HashMap
 	 * @throws PersuasionAPIException
 	 */
-	public Map<Integer, ActivityLog> getAllActivityLogsForUser(String userId)
+	public Map<String, ActivityLog> getAllActivityLogsForUser(String userId)
 			throws PersuasionAPIException {
 		try {
 			List<ActivityLog> activityLogs = activityLogDAO.getAllActivityLogsForUser(userId);
 
-			Map<Integer, ActivityLog> returnMap = new HashMap<Integer, ActivityLog>();
+			Map<String, ActivityLog> returnMap = new HashMap<String, ActivityLog>();
 			for(ActivityLog activityLog : activityLogs) {
-				returnMap.put(activityLog.getId().getActivities().getActivityId(), activityLog);
+				returnMap.put(activityLog.getId().getActivity().getActivityName(), activityLog);
 			}
 			return returnMap;
 		} catch(PersuasionAPIException e) {

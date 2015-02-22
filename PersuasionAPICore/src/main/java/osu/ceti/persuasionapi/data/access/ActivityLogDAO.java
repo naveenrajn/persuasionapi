@@ -4,17 +4,10 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.hibernate.HibernateException;
-import org.hibernate.LockMode;
-import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.criterion.Example;
 import org.hibernate.criterion.Restrictions;
-import org.springframework.transaction.annotation.Transactional;
 
 import osu.ceti.persuasionapi.core.exceptions.DatabaseException;
-import osu.ceti.persuasionapi.core.exceptions.PersuasionAPIException;
-import osu.ceti.persuasionapi.core.helpers.InternalErrorCodes;
 import osu.ceti.persuasionapi.core.helpers.StringHelper;
 import osu.ceti.persuasionapi.data.model.ActivityLog;
 
@@ -67,7 +60,7 @@ public class ActivityLogDAO {
 		try {
 			List results = sessionFactory.getCurrentSession()
 					.createCriteria("osu.ceti.persuasionapi.data.model.ActivityLog")
-					.add(Restrictions.eq("id.users.userId", userId)).list();
+					.add(Restrictions.eq("id.user.userId", userId)).list();
 			log.debug("find ActivityLog for userId successful, result size: "
 					+ results.size());
 			return results;
@@ -80,5 +73,4 @@ public class ActivityLogDAO {
 					+ " for user " + userId, e);
 		}
 	}
-	
 }

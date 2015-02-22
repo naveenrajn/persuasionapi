@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated Feb 20, 2015 8:26:25 PM by Hibernate Tools 3.4.0.CR1 -->
+<hibernate-mapping>
+    <class name="osu.ceti.persuasionapi.data.model.Rule" table="rule" catalog="persuasion_api">
+        <id name="ruleId" type="java.lang.Integer">
+            <column name="rule_id" />
+            <generator class="identity" />
+        </id>
+        <many-to-one name="parentRule" class="osu.ceti.persuasionapi.data.model.Rule" fetch="select">
+            <column name="parent_rule" />
+        </many-to-one>
+        <property name="ruleName" type="string">
+            <column name="rule_name" length="50" not-null="true" />
+        </property>
+        <property name="ruleDesc" type="string">
+            <column name="rule_desc" />
+        </property>
+        <set name="ruleComparisons" table="rule_comparison" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="rule_id" />
+            </key>
+            <one-to-many class="osu.ceti.persuasionapi.data.model.RuleComparison" />
+        </set>
+        <set name="childRules" table="rule" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="parent_rule" />
+            </key>
+            <one-to-many class="osu.ceti.persuasionapi.data.model.Rule" />
+        </set>
+        <set name="ruleQueueMappings" table="rule_queue_mapping" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="rule_id" not-null="true" />
+            </key>
+            <one-to-many class="osu.ceti.persuasionapi.data.model.RuleQueueMapping" />
+        </set>
+        <one-to-one name="ruleAction" class="osu.ceti.persuasionapi.data.model.RuleAction"></one-to-one>
+    </class>
+</hibernate-mapping>

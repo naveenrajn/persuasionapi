@@ -15,5 +15,5 @@
 	<context:component-scan base-package="osu.ceti.persuasionapi">
 	  <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
 	</context:component-scan>
-
+	
 </beans>

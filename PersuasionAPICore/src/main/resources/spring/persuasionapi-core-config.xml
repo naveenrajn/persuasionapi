@@ -50,20 +50,24 @@
 
 		<property name="mappingResources">
 			<list>
-				<value>/database/hibernate/Activities.hbm.xml</value>
+				<value>/database/hibernate/Activity.hbm.xml</value>
 				<value>/database/hibernate/ActivityLog.hbm.xml</value>
-				<value>/database/hibernate/BadgeRuleMappings.hbm.xml</value>
-				<value>/database/hibernate/BadgeRules.hbm.xml</value>
-				<value>/database/hibernate/Badges.hbm.xml</value>
-				<value>/database/hibernate/RuleComparators.hbm.xml</value>
-				<value>/database/hibernate/UserBadgeMappings.hbm.xml</value>
-				<value>/database/hibernate/Users.hbm.xml</value>
+				<value>/database/hibernate/Badge.hbm.xml</value>
+				<value>/database/hibernate/Rule.hbm.xml</value>
+				<value>/database/hibernate/RuleAction.hbm.xml</value>
+				<value>/database/hibernate/RuleComparator.hbm.xml</value>
+				<value>/database/hibernate/RuleComparison.hbm.xml</value>
+				<value>/database/hibernate/RuleQueueMapping.hbm.xml</value>
+				<value>/database/hibernate/User.hbm.xml</value>
+				<value>/database/hibernate/UserAttribute.hbm.xml</value>
+				<value>/database/hibernate/UserAttributeValue.hbm.xml</value>
+				<value>/database/hibernate/UserBadgeMapping.hbm.xml</value>
 			</list>
 		</property>
 
 	</bean>
 
-	<bean id="activitiesDAO" class="osu.ceti.persuasionapi.data.access.ActivitiesDAO">
+	<bean id="activityDAO" class="osu.ceti.persuasionapi.data.access.ActivityDAO">
 		<property name="sessionFactory" ref="sessionFactory" />
 	</bean>
 
@@ -71,28 +75,41 @@
 		<property name="sessionFactory" ref="sessionFactory" />
 	</bean>
 	
-	<bean id="badgeRuleMappingsDAO"
-		class="osu.ceti.persuasionapi.data.access.BadgeRuleMappingsDAO">
+	<bean id="badgeDAO" class="osu.ceti.persuasionapi.data.access.BadgeDAO">
 		<property name="sessionFactory" ref="sessionFactory" />
 	</bean>
-	<bean id="BadgeRulesDAO" class="osu.ceti.persuasionapi.data.access.BadgeRulesDAO">
+	
+	<bean id="ruleActionDAO" class="osu.ceti.persuasionapi.data.access.RuleActionDAO">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+	
+	<bean id="ruleComparatorDAO" class="osu.ceti.persuasionapi.data.access.RuleComparatorDAO">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+	
+	<bean id="ruleComparisonDAO" class="osu.ceti.persuasionapi.data.access.RuleComparisonDAO">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+	
+	<bean id="ruleDAO" class="osu.ceti.persuasionapi.data.access.RuleDAO">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+	
+	<bean id="userAttributeDAO" class="osu.ceti.persuasionapi.data.access.UserAttributeDAO">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+	
+	<bean id="userAttributeValueDAO" 
+		class="osu.ceti.persuasionapi.data.access.UserAttributeValueDAO">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+	
+	<bean id="userBadgeMappingDAO"
+		class="osu.ceti.persuasionapi.data.access.UserBadgeMappingDAO">
 		<property name="sessionFactory" ref="sessionFactory" />
 	</bean>
 
-	<bean id="badgesDAO" class="osu.ceti.persuasionapi.data.access.BadgesDAO">
-		<property name="sessionFactory" ref="sessionFactory" />
-	</bean>
-
-	<bean id="ruleComparatorsDAO" class="osu.ceti.persuasionapi.data.access.RuleComparatorsDAO">
-		<property name="sessionFactory" ref="sessionFactory" />
-	</bean>
-
-	<bean id="userBadgeMappingsDAO"
-		class="osu.ceti.persuasionapi.data.access.UserBadgeMappingsDAO">
-		<property name="sessionFactory" ref="sessionFactory" />
-	</bean>
-
-	<bean id="usersDAO" class="osu.ceti.persuasionapi.data.access.UsersDAO">
+	<bean id="userDAO" class="osu.ceti.persuasionapi.data.access.UserDAO">
 		<property name="sessionFactory" ref="sessionFactory" />
 	</bean>
 
@@ -115,11 +132,12 @@
 
 	<bean id="badgeRuleProcessingJMSTemplate" class="org.springframework.jms.core.JmsTemplate">
 		<property name="connectionFactory" ref="activemqConnectionFactory" />
-		<property name="defaultDestination" ref="badgeRuleProcessingQueue" />
+		<!-- <property name="defaultDestination" ref="badgeRuleProcessingQueue" /> -->
+		<property name="destinationResolver" ref="jmsDestinationResolver" />
 	</bean>
 	
-	<!-- <bean id="activityOperations" class="osu.ceti.persuasionapi.core.badges.ActivityOperations">
-		<property name="jmsQueue" ref="badgeRuleProcessingJMSTemplate" />
-	</bean> -->
+	<!-- A dynamic resolver --> 
+	<bean id="jmsDestinationResolver" 
+			class=" org.springframework.jms.support.destination.DynamicDestinationResolver"/>
 
 </beans>
