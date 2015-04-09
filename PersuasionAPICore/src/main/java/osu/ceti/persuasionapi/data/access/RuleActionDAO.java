@@ -81,24 +81,6 @@ public class RuleActionDAO {
 		}
 	}
 
-	/*public RuleAction findById(osu.ceti.persuasionapi.data.model.RuleActionId id) {
-		log.debug("getting RuleAction instance with id: " + id);
-		try {
-			RuleAction instance = (RuleAction) sessionFactory
-					.getCurrentSession().get(
-							"osu.ceti.persuasionapi.data.model.RuleAction", id);
-			if (instance == null) {
-				log.debug("get successful, no instance found");
-			} else {
-				log.debug("get successful, instance found");
-			}
-			return instance;
-		} catch (RuntimeException re) {
-			log.error("get failed", re);
-			throw re;
-		}
-	}*/
-
 	public List findByExample(RuleAction instance) {
 		log.debug("finding RuleAction instance by example");
 		try {

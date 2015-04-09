@@ -1,5 +1,7 @@
 package osu.ceti.persuasionapi.data.model;
 
+// Generated Mar 11, 2015 2:28:19 PM by Hibernate Tools 3.4.0.CR1
+
 import java.util.HashSet;
 import java.util.Set;
 
@@ -14,6 +16,7 @@ public class Badge implements java.io.Serializable {
 	private String badgeName;
 	private String badgeDesc;
 	private byte[] image;
+	private String emailSubject;
 	private String emailMsg;
 	private String publicRecognition;
 	private Set userBadgeMappings = new HashSet(0);
@@ -29,13 +32,15 @@ public class Badge implements java.io.Serializable {
 	}
 
 	public Badge(String badgeClass, int badgeLevel, String badgeName,
-			String badgeDesc, byte[] image, String emailMsg,
-			String publicRecognition, Set userBadgeMappings, Set ruleActions) {
+			String badgeDesc, byte[] image, String emailSubject,
+			String emailMsg, String publicRecognition, Set userBadgeMappings,
+			Set ruleActions) {
 		this.badgeClass = badgeClass;
 		this.badgeLevel = badgeLevel;
 		this.badgeName = badgeName;
 		this.badgeDesc = badgeDesc;
 		this.image = image;
+		this.emailSubject = emailSubject;
 		this.emailMsg = emailMsg;
 		this.publicRecognition = publicRecognition;
 		this.userBadgeMappings = userBadgeMappings;
@@ -88,6 +93,14 @@ public class Badge implements java.io.Serializable {
 
 	public void setImage(byte[] image) {
 		this.image = image;
+	}
+
+	public String getEmailSubject() {
+		return this.emailSubject;
+	}
+
+	public void setEmailSubject(String emailSubject) {
+		this.emailSubject = emailSubject;
 	}
 
 	public String getEmailMsg() {

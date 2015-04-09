@@ -21,7 +21,7 @@
 	<bean
 		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
 		<property name="location">
-			<value>classpath:properties/database.properties</value>
+			<value>classpath:properties/persuasionapi.properties</value>
 		</property>
 	</bean>
 
@@ -40,11 +40,14 @@
 		<property name="dataSource">
 			<ref bean="dataSource" />
 		</property>
-
+		
 		<property name="hibernateProperties">
 			<props>
 				<prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop>
 				<prop key="hibernate.show_sql">true</prop>
+				<prop key="hibernate.cache.use_second_level_cache">true</prop>
+				<prop key="hibernate.cache.region.factory_class">
+					org.hibernate.cache.ehcache.EhCacheRegionFactory</prop>
 			</props>
 		</property>
 
@@ -62,6 +65,7 @@
 				<value>/database/hibernate/UserAttribute.hbm.xml</value>
 				<value>/database/hibernate/UserAttributeValue.hbm.xml</value>
 				<value>/database/hibernate/UserBadgeMapping.hbm.xml</value>
+				<value>/database/hibernate/UserSocialNotification.hbm.xml</value>
 			</list>
 		</property>
 
@@ -112,6 +116,10 @@
 	<bean id="userDAO" class="osu.ceti.persuasionapi.data.access.UserDAO">
 		<property name="sessionFactory" ref="sessionFactory" />
 	</bean>
+	
+	<bean id="userSocialNotificationsDAO" class="osu.ceti.persuasionapi.data.access.UserSocialNotificationDAO">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
 
 	<bean id="transactionManager"
 		class="org.springframework.orm.hibernate4.HibernateTransactionManager">
@@ -122,7 +130,7 @@
 
 	<bean id="activemqConnectionFactory" class="org.apache.activemq.ActiveMQConnectionFactory">
 		<property name="brokerURL">
-			<value>tcp://localhost:61616</value>
+			<value>${activemq.server}</value>
 		</property>
 	</bean>
 	
@@ -130,9 +138,8 @@
 		<constructor-arg value="osu.ceti.persuasionapi.internal.activityreported" />
 	</bean>
 
-	<bean id="badgeRuleProcessingJMSTemplate" class="org.springframework.jms.core.JmsTemplate">
+	<bean id="jmsTemplate" class="org.springframework.jms.core.JmsTemplate">
 		<property name="connectionFactory" ref="activemqConnectionFactory" />
-		<!-- <property name="defaultDestination" ref="badgeRuleProcessingQueue" /> -->
 		<property name="destinationResolver" ref="jmsDestinationResolver" />
 	</bean>
 	

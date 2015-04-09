@@ -2,15 +2,25 @@ package osu.ceti.persuasionapi;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import org.springframework.util.ObjectUtils;
 
 import osu.ceti.persuasionapi.client.MessageListener;
 import osu.ceti.persuasionapi.client.MessageListenerRegistrar;
+import osu.ceti.persuasionapi.core.helpers.StringHelper;
 import osu.ceti.persuasionapi.services.ActivityService;
 import osu.ceti.persuasionapi.services.BadgeService;
 import osu.ceti.persuasionapi.services.UserAttributeService;
+import osu.ceti.persuasionapi.services.UserSocialNotificationService;
+import osu.ceti.persuasionapi.services.wrappers.GetSocialNotificationsResponse;
 import osu.ceti.persuasionapi.services.wrappers.GetUserAttributeResponse;
 import osu.ceti.persuasionapi.services.wrappers.GetUserBadgeResponse;
+import osu.ceti.persuasionapi.services.wrappers.model.SocialNotification;
 
 /**
  * Test class. To be converted to junit tests
@@ -24,9 +34,23 @@ public class TestMain {
 		try {
 			
 			PersuasionAPIClient client = new PersuasionAPIClient();
-			client.initialize("http://localhost:8080/PersuasionAPI");
+			client.initialize("http://localhost:8080/PersuasiveAPI");
 			
-			MessageListenerRegistrar.unregisterListener("asd");
+			UserSocialNotificationService socialService = new UserSocialNotificationService();
+			GetSocialNotificationsResponse response = socialService.getNotificationsAfterTime("naveen1",
+					StringHelper.toDateFromCharString("2015-04-08 00:41:43"));
+			//do something with the response
+			System.out.println("Size: " + response.getNotifications().size());
+			for(SocialNotification notification: response.getNotifications()) {
+				System.out.println("Notification: " + notification.getNotificationText());
+			}
+			
+			/*String str = "Naveen";
+			String[] strs = {"Nadc", "Naveen", "sadfsdf"};
+			
+			System.out.println(ObjectUtils.containsElement(strs, str));*/
+			
+			/*MessageListenerRegistrar.unregisterListener("asd");*/
 			
 			//Test /badges/getAllBadgesForUser
 			/*BadgeService badgeService = new BadgeService();
@@ -38,7 +62,7 @@ public class TestMain {
 			
 			//Test /badges/getUserBadgeForClass
 			/*BadgeService badgeService = new BadgeService();
-			GetUserBadgeResponse response = badgeService.getUserBadge("2", "reviewer");
+			GetUserBadgeResponse response = badgeService.getUserBadge("9", "reviewer");
 			System.out.println("Get user badge: " + response.getBadgeLevel());*/
 			
 			/*String queueName = "osu.ceti.persuasionapi.internal.activityreported";

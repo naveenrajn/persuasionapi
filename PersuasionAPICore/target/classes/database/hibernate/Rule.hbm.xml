@@ -4,6 +4,7 @@
 <!-- Generated Feb 20, 2015 8:26:25 PM by Hibernate Tools 3.4.0.CR1 -->
 <hibernate-mapping>
     <class name="osu.ceti.persuasionapi.data.model.Rule" table="rule" catalog="persuasion_api">
+    	<cache usage="nonstrict-read-write" />
         <id name="ruleId" type="java.lang.Integer">
             <column name="rule_id" />
             <generator class="identity" />

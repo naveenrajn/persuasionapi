@@ -1,10 +1,14 @@
 package osu.ceti.persuasionapi.async;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import osu.ceti.persuasionapi.core.helpers.ComparisonVauleReplacer;
 import osu.ceti.persuasionapi.core.helpers.Constants;
 import osu.ceti.persuasionapi.data.model.Activity;
 import osu.ceti.persuasionapi.data.model.ActivityLog;
@@ -14,6 +18,8 @@ import osu.ceti.persuasionapi.data.model.UserAttribute;
 
 @Component
 public class RuleComparisonProcessor {
+	
+	@Autowired ComparisonVauleReplacer comparisonValueProvider;
 
 	/**
 	 * Compare activity/attribute values as specified by the comparison rules for the rule
@@ -50,8 +56,11 @@ public class RuleComparisonProcessor {
 				}
 				value = userAttributes.get(attribute.getAttributeName());
 			}
+			
+			String comparisonValue = comparisonValueProvider.getValue(
+					comparison.getValue(), activityLogs, userAttributes);
 			if(!valuePassesComparisonCriteria(comparison.getRuleComparator().getComparatorId(),
-					comparison.getValue(), count, value)) {
+					comparisonValue, count, value)) {
 				rulePassed = false;
 				break;
 			}
@@ -65,17 +74,30 @@ public class RuleComparisonProcessor {
 	 * @param comparisonValue
 	 * @param count
 	 * @param value
-	 * @return true if comparison succeeeds; false otherwise
+	 * @return true if comparison succeeds; false otherwise
 	 */
 	private boolean valuePassesComparisonCriteria(String comparatorId, 
-			String comparisonValue, int count, String value) {
+			String comparisonValue, Integer count, String value) {
 		//TODO: Handle exceptions appropriately
 		if(comparatorId.equalsIgnoreCase(Constants.COUNT_GREATER_THAN)) {
+			if(count == null || comparisonValue == null) return false;
 			return count>Integer.parseInt(comparisonValue);
 		} else if(comparatorId.equalsIgnoreCase(Constants.COUNT_GREATER_THAN_EQUAL)) {
+			if(count == null || comparisonValue == null) return false;
 			return count>=Integer.parseInt(comparisonValue);
+		} else if(comparatorId.equalsIgnoreCase(Constants.COUNT_LESS_THAN)) {
+			if(count == null || comparisonValue == null) return false;
+			return count<Integer.parseInt(comparisonValue);
+		} else if(comparatorId.equalsIgnoreCase(Constants.COUNT_LESS_THAN_EQUAL)) {
+			if(count == null || comparisonValue == null) return false;
+			return count<=Integer.parseInt(comparisonValue);
 		} else if(comparatorId.equalsIgnoreCase(Constants.VALUE_EQUAL_TO)) {
+			if(value == null || comparisonValue == null) return false;
 			return value.equalsIgnoreCase(comparisonValue);
+		} else if(comparatorId.equalsIgnoreCase(Constants.VALUE_IN)) {
+			if(value == null || comparisonValue == null) return false;
+			List<String> comparisonValues = Arrays.asList(comparisonValue.split(","));
+			return comparisonValues.contains(value);
 		} else {
 			//TODO: Handle exception appropriately
 			throw new RuntimeException("Comparison method not supported");

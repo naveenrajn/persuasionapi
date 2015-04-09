@@ -36,8 +36,10 @@ public class BadgeServices {
 		try {
 			UserBadgeMapping mapping = userBadgeOperations
 					.getSingleClassBadgeForUser(userId, badgeClass);
+			if(mapping == null) return null;
+			
 			Hibernate.initialize(mapping.getBadge());
-			return (mapping == null) ? null : mapping.getBadge();
+			return mapping.getBadge();
 		} catch (PersuasionAPIException e) {
 			log.error("Failed to process getUserBadgeForBadgeClass");
 			throw e;

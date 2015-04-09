@@ -16,6 +16,7 @@ CREATE TABLE badge (
     badge_name VARCHAR(50) NOT NULL,
     badge_desc VARCHAR(255),
     image MEDIUMBLOB,
+    email_subject VARCHAR(255),
     email_msg TEXT,
     public_recognition TEXT,
     PRIMARY KEY (badge_id),
@@ -91,6 +92,7 @@ DROP TABLE IF EXISTS rule_action;
 CREATE TABLE rule_action (
     rule_id INTEGER NOT NULL,
     badge_id INTEGER,
+    email_subject VARCHAR(255),
     email_msg TEXT,
     social_update TEXT,
     notify_always BOOL,
@@ -122,4 +124,19 @@ CREATE TABLE rule_comparison (
     CONSTRAINT FOREIGN KEY (activity_name) REFERENCES activity (activity_name),
     CONSTRAINT FOREIGN KEY (attribute_name) REFERENCES user_attribute (attribute_name),
     CONSTRAINT FOREIGN KEY (comparator) REFERENCES rule_comparator (comparator_id)
+);
+
+DROP TABLE IF EXISTS user_social_notification;
+CREATE TABLE user_social_notification (
+	notification_id INTEGER NOT NULL AUTO_INCREMENT,
+	user_id VARCHAR(255) NOT NULL,
+    rule_id INTEGER,
+    badge_id INTEGER,
+    notification_text TEXT NOT NULL,
+    posted_time TIMESTAMP NOT NULL,
+    CONSTRAINT PRIMARY KEY(notification_id),
+    CONSTRAINT UNIQUE (user_id , rule_id, badge_id),
+    CONSTRAINT FOREIGN KEY (user_id) REFERENCES user (user_id),
+    CONSTRAINT FOREIGN KEY (rule_id) REFERENCES rule (rule_id),
+    CONSTRAINT FOREIGN KEY (badge_id) REFERENCES badge (badge_id)
 );

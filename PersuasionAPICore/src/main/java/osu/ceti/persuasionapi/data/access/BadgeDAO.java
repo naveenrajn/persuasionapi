@@ -8,6 +8,8 @@ import org.hibernate.LockMode;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Example;
 
+import osu.ceti.persuasionapi.core.exceptions.DatabaseException;
+import osu.ceti.persuasionapi.core.helpers.StringHelper;
 import osu.ceti.persuasionapi.data.model.Badge;
 
 /**
@@ -81,20 +83,23 @@ public class BadgeDAO {
 		}
 	}
 
-	public Badge findById(java.lang.Integer id) {
+	public Badge findById(java.lang.Integer id) throws DatabaseException {
 		log.debug("getting Badges instance with id: " + id);
 		try {
 			Badge instance = (Badge) sessionFactory.getCurrentSession().get(
-					"osu.ceti.persuasionapi.data.model.Badge", id);
+					Badge.class, id);
 			if (instance == null) {
 				log.debug("get successful, no instance found");
 			} else {
 				log.debug("get successful, instance found");
 			}
 			return instance;
-		} catch (RuntimeException re) {
-			log.error("get failed", re);
-			throw re;
+		} catch (Exception e) {
+			log.error("find Badge by Id failed"
+					+ ". Exception type: " + e.getClass().getName()
+					+ ". Exception message: " + e.getMessage());
+			log.debug(StringHelper.stackTraceToString(e));
+			throw new DatabaseException("Failed to retrieve Badge from database", e);
 		}
 	}
 

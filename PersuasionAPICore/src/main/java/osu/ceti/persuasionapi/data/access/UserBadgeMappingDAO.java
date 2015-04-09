@@ -70,7 +70,7 @@ public class UserBadgeMappingDAO {
 			throw new DatabaseException("Failed to retrieve UserBadgeMappings from database", e);
 		}
 	}
-
+	
 	public List getAllBadgeMappingsForUser(String userId) throws DatabaseException {
 		log.debug("finding UserBadgeMappings for user: " + userId);
 		try {

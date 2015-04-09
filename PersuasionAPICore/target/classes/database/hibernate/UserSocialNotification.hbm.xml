@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated Apr 7, 2015 6:12:32 PM by Hibernate Tools 3.4.0.CR1 -->
+<hibernate-mapping>
+    <class name="osu.ceti.persuasionapi.data.model.UserSocialNotification" table="user_social_notification" catalog="persuasion_api">
+        <id name="notificationId" type="java.lang.Integer">
+            <column name="notification_id" />
+            <generator class="identity" />
+        </id>
+        <many-to-one name="badge" class="osu.ceti.persuasionapi.data.model.Badge" fetch="select">
+            <column name="badge_id" />
+        </many-to-one>
+        <many-to-one name="rule" class="osu.ceti.persuasionapi.data.model.Rule" fetch="select">
+            <column name="rule_id" />
+        </many-to-one>
+        <many-to-one name="user" class="osu.ceti.persuasionapi.data.model.User" fetch="select">
+            <column name="user_id" not-null="true" />
+        </many-to-one>
+        <property name="notificationText" type="string">
+            <column name="notification_text" length="65535" not-null="true" />
+        </property>
+        <property name="postedTime" type="timestamp">
+            <column name="posted_time" length="0" not-null="true" />
+        </property>
+    </class>
+</hibernate-mapping>

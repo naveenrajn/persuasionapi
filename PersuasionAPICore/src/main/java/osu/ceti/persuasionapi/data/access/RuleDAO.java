@@ -9,6 +9,8 @@ import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Example;
 import org.hibernate.criterion.Restrictions;
 
+import osu.ceti.persuasionapi.core.exceptions.DatabaseException;
+import osu.ceti.persuasionapi.core.helpers.StringHelper;
 import osu.ceti.persuasionapi.data.model.Rule;
 
 /**
@@ -82,20 +84,23 @@ public class RuleDAO {
 		}
 	}
 
-	public Rule findById(java.lang.Integer id) {
+	public Rule findById(java.lang.Integer id) throws DatabaseException {
 		log.debug("getting Rule instance with id: " + id);
 		try {
 			Rule instance = (Rule) sessionFactory.getCurrentSession().get(
-					"osu.ceti.persuasionapi.data.model.Rule", id);
+					Rule.class, id);
 			if (instance == null) {
 				log.debug("get successful, no instance found");
 			} else {
 				log.debug("get successful, instance found");
 			}
 			return instance;
-		} catch (RuntimeException re) {
-			log.error("get failed", re);
-			throw re;
+		} catch (Exception e) {
+			log.error("find Rule by Id failed"
+					+ ". Exception type: " + e.getClass().getName()
+					+ ". Exception message: " + e.getMessage());
+			log.debug(StringHelper.stackTraceToString(e));
+			throw new DatabaseException("Failed to retrieve Rule from database", e);
 		}
 	}
 

@@ -4,6 +4,7 @@
 <!-- Generated Feb 12, 2015 1:50:42 PM by Hibernate Tools 3.4.0.CR1 -->
 <hibernate-mapping>
     <class name="osu.ceti.persuasionapi.data.model.RuleComparator" table="rule_comparator" catalog="persuasion_api">
+    	<cache usage="nonstrict-read-write" />
         <id name="comparatorId" type="string">
             <column name="comparator_id" length="30" />
             <generator class="assigned" />

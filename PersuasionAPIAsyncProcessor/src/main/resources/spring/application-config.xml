@@ -18,7 +18,7 @@
 	
 	<bean id="activemqConnectionFactory" class="org.apache.activemq.ActiveMQConnectionFactory">
 		<property name="brokerURL">
-			<value>tcp://localhost:61616</value>
+			<value>${activemq.server}</value>
 		</property>
 	</bean>
 	
@@ -31,7 +31,7 @@
 		<constructor-arg value="osu.ceti.persuasionapi.internal.activityreported" />
 	</bean>
 
-	<bean id="badgeRuleProcessingJMSTemplate" class="org.springframework.jms.core.JmsTemplate">
+	<bean id="jmsTemplate" class="org.springframework.jms.core.JmsTemplate">
 		<property name="connectionFactory" ref="activemqConnectionFactory" />
 		<property name="defaultDestination" ref="badgeRuleProcessingQueue" />
 	</bean>

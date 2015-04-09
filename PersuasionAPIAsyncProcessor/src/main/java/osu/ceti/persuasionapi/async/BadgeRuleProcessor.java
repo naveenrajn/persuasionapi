@@ -43,11 +43,14 @@ public class BadgeRuleProcessor {
 	public void processRulesForUser(String userId) throws PersuasionAPIException {
 
 		log.debug("Processing rules for user Id: " + userId);
-
+		
 		//TODO: If Hibernate cache does not work, resort to checkOrPopulateBadgeRules() and maintain cache
 		//dataCacheOperations.checkOrPopulateBadgeRules();
-		dataCacheOperations.populateOrRefreshBadgeRules();
-
+		try {
+			dataCacheOperations.populateOrRefreshBadgeRules();
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
 
 		Map<String, ActivityLog> activityLogs = 
 				activityLogDAO.getAllActivityLogsForUser(userId);
@@ -74,9 +77,11 @@ public class BadgeRuleProcessor {
 	 * @param userAttributes
 	 * @param badgesToBeAssigned
 	 * @return true/false indicating if the rule passed
+	 * @throws PersuasionAPIException 
 	 */
 	private boolean processRule(String userId, Rule rule, Map<String, ActivityLog> activityLogs,
-			Map<String, String> userAttributes, Map<String, Badge> badgesToBeAssigned) {
+			Map<String, String> userAttributes, Map<String, Badge> badgesToBeAssigned) 
+			throws PersuasionAPIException {
 		boolean rulePassed = 
 				ruleComparisonProcessor.processRuleComparisons(rule, activityLogs, userAttributes);
 		if(rulePassed) {
@@ -96,10 +101,11 @@ public class BadgeRuleProcessor {
 	 * @param userAttributes
 	 * @param badgesToBeAssigned
 	 * @return true/false indicating if at least one child rule passed
+	 * @throws PersuasionAPIException 
 	 */
 	private boolean processSubrules(String userId, Rule rule, 
 			Map<String, ActivityLog> activityLogs, Map<String, String> userAttributes, 
-			Map<String, Badge> badgesToBeAssigned) {
+			Map<String, Badge> badgesToBeAssigned) throws PersuasionAPIException {
 
 		boolean atleastOneChildRulePassed = false;
 
@@ -119,11 +125,11 @@ public class BadgeRuleProcessor {
 	 * Assigns the badges identified by rule processing to the user
 	 * @param userId
 	 * @param badgesToBeAssigned
-	 * @throws DatabaseException
+	 * @throws PersuasionAPIException 
 	 */
 	//TODO: Add badge removal logic. Is this required? Yes it is
 	private void processBadgeAssignments(String userId,
-			Map<String, Badge> badgesToBeAssigned) throws DatabaseException {
+			Map<String, Badge> badgesToBeAssigned) throws PersuasionAPIException {
 		if(!badgesToBeAssigned.isEmpty()) {
 			for(String badgeClass : badgesToBeAssigned.keySet()) {
 				Badge badge = badgesToBeAssigned.get(badgeClass);

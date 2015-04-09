@@ -42,7 +42,7 @@ public class BadgeServicesController extends ControllerTemplate {
 					requestData.getBadgeClass());
 			
 			if(badge == null) {
-				String errorMessage = "No badge assigned for user " + requestData.getUserId()
+				String errorMessage = "No badge assignment found for user " + requestData.getUserId()
 						+ " for class " + requestData.getBadgeClass();
 				return failureResponse("1001", errorMessage);
 			}
