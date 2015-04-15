@@ -5,8 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.Logger;
 import org.hibernate.annotations.common.util.StringHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jms.core.JmsTemplate;
@@ -14,7 +13,6 @@ import org.springframework.stereotype.Component;
 
 import osu.ceti.persuasionapi.core.exceptions.DatabaseException;
 import osu.ceti.persuasionapi.core.exceptions.PersuasionAPIException;
-import osu.ceti.persuasionapi.core.helpers.ComparisonVauleReplacer;
 import osu.ceti.persuasionapi.core.helpers.Constants;
 import osu.ceti.persuasionapi.core.helpers.JMSMessageSender;
 import osu.ceti.persuasionapi.data.access.UserBadgeMappingDAO;
@@ -27,7 +25,7 @@ import osu.ceti.persuasionapi.data.model.UserBadgeMappingId;
 @Component
 public class UserBadgeOperations {
 	
-	private static final Log log = LogFactory.getLog(UserBadgeOperations.class);
+	private static final Logger log = Logger.getLogger(UserBadgeOperations.class);
 	
 	private final String userEmailQueueName = "osu.ceti.persuasionapi.badgenotifications.email";
 

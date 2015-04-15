@@ -3,8 +3,7 @@ package osu.ceti.persuasionapi.services.external;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,9 +17,9 @@ import osu.ceti.persuasionapi.data.model.UserSocialNotification;
 @Service
 @Transactional
 public class UserSocialServices {
-
-	private static final Log log = LogFactory.getLog(UserSocialServices.class);
 	
+	private static final Logger log = Logger.getLogger(UserSocialServices.class);
+
 	@Autowired UserSocialFeedOperations userSocialFeedOperations;
 	
 	public List<UserSocialNotification> getUserSocialNotificationsAfterTime(String userId, String timeStamp) throws PersuasionAPIException {

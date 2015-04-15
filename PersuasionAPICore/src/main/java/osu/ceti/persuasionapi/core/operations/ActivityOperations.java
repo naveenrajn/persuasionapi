@@ -1,7 +1,6 @@
 package osu.ceti.persuasionapi.core.operations;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -13,7 +12,7 @@ import osu.ceti.persuasionapi.data.model.Activity;
 @Component
 public class ActivityOperations {
 	
-	private static final Log log = LogFactory.getLog(ActivityOperations.class);
+	private static final Logger log = Logger.getLogger(ActivityOperations.class);
 	
 	@Autowired private ActivityDAO activityDAO;
 	

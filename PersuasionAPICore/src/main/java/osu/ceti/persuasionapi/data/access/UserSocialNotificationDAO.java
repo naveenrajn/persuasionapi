@@ -3,8 +3,7 @@ package osu.ceti.persuasionapi.data.access;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.Logger;
 import org.hibernate.LockMode;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Example;
@@ -12,7 +11,6 @@ import org.hibernate.criterion.Restrictions;
 
 import osu.ceti.persuasionapi.core.exceptions.DatabaseException;
 import osu.ceti.persuasionapi.core.helpers.StringHelper;
-import osu.ceti.persuasionapi.data.model.Rule;
 import osu.ceti.persuasionapi.data.model.UserSocialNotification;
 
 /**
@@ -21,7 +19,7 @@ import osu.ceti.persuasionapi.data.model.UserSocialNotification;
  */
 public class UserSocialNotificationDAO {
 
-	private static final Log log = LogFactory.getLog(UserSocialNotificationDAO.class);
+	private static final Logger log = Logger.getLogger(UserSocialNotificationDAO.class);
 	
 	private SessionFactory sessionFactory;
 	

@@ -1,7 +1,6 @@
 package osu.ceti.persuasionapi.core.operations;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -12,7 +11,7 @@ import osu.ceti.persuasionapi.data.model.Badge;
 @Component
 public class BadgeOperations {
 	
-	private static final Log log = LogFactory.getLog(BadgeOperations.class);
+	private static final Logger log = Logger.getLogger(BadgeOperations.class);
 	
 	@Autowired BadgeDAO badgeDAO;
 

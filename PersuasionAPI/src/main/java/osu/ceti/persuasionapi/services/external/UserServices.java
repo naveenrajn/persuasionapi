@@ -1,7 +1,6 @@
 package osu.ceti.persuasionapi.services.external;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,7 +14,7 @@ import osu.ceti.persuasionapi.data.model.User;
 @Transactional
 public class UserServices {
 	
-	private static final Log log = LogFactory.getLog(UserServices.class);
+	private static final Logger log = Logger.getLogger(UserServices.class);
 
 	@Autowired private UserOperations userOperations;
 

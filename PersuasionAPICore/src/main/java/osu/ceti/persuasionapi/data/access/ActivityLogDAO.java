@@ -2,8 +2,7 @@ package osu.ceti.persuasionapi.data.access;
 
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.Logger;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
 
@@ -17,7 +16,7 @@ import osu.ceti.persuasionapi.data.model.ActivityLog;
  */
 public class ActivityLogDAO {
 
-	private static final Log log = LogFactory.getLog(ActivityLogDAO.class);
+	private static final Logger log = Logger.getLogger(ActivityLogDAO.class);
 	
 	private SessionFactory sessionFactory;
 	

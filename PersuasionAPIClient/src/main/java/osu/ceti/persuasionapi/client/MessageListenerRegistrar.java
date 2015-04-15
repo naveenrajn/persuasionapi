@@ -1,8 +1,7 @@
 package osu.ceti.persuasionapi.client;
 
 import org.apache.activemq.command.ActiveMQQueue;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.Logger;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
@@ -15,7 +14,7 @@ import osu.ceti.persuasionapi.core.exceptions.PersuasionAPIException;
 
 public class MessageListenerRegistrar {
 	
-	private static final Log log = LogFactory.getLog(MessageListenerRegistrar.class);
+	private static final Logger log = Logger.getLogger(MessageListenerRegistrar.class);
 
 	/**
 	 * Creates and registers a new listener for the given queue

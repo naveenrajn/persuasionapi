@@ -3,8 +3,7 @@ package osu.ceti.persuasionapi.services.external;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.Logger;
 import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,7 +19,7 @@ import osu.ceti.persuasionapi.data.model.UserBadgeMapping;
 @Transactional
 public class BadgeServices {
 	
-	private static final Log log = LogFactory.getLog(ActivityServices.class);
+	private static final Logger log = Logger.getLogger(ActivityServices.class);
 	
 	@Autowired UserBadgeOperations userBadgeOperations;
 

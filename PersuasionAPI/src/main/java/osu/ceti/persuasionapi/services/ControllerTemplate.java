@@ -1,7 +1,6 @@
 package osu.ceti.persuasionapi.services;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.Logger;
 
 import osu.ceti.persuasionapi.core.exceptions.PersuasionAPIException;
 
@@ -13,7 +12,7 @@ public class ControllerTemplate {
 	 */
 	public RestServiceResponse successResponse() {
 		//TODO: Verify if this creates a logger using the derived class' instance
-		Log log = LogFactory.getLog(getClass());
+		Logger log = Logger.getLogger(getClass());
 		try {
 			RestServiceResponse response = new RestServiceResponse(RestServiceResponse.SUCCESS);
 			return response;
@@ -30,7 +29,7 @@ public class ControllerTemplate {
 	 * @return success resposne with data
 	 */
 	public RestServiceResponse successResponse(Object data) {
-		Log log = LogFactory.getLog(getClass());
+		Logger log = Logger.getLogger(getClass());
 		try {
 			RestServiceResponse response = successResponse();
 			response.setData(data);
@@ -49,7 +48,7 @@ public class ControllerTemplate {
 	 * @return failure response
 	 */
 	public RestServiceResponse failureResponse(String errorCode, String errorMessage) {
-		Log log = LogFactory.getLog(getClass());
+		Logger log = Logger.getLogger(getClass());
 		try {
 			RestServiceResponse response = new RestServiceResponse(RestServiceResponse.FAILURE);
 			response.setErrorCode(errorCode);

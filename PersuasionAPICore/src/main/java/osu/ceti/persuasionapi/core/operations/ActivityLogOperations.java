@@ -5,8 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.stereotype.Component;
@@ -25,7 +24,7 @@ import osu.ceti.persuasionapi.data.model.User;
 @Component
 public class ActivityLogOperations {
 
-	private static final Log log = LogFactory.getLog(ActivityLogOperations.class);
+	private static final Logger log = Logger.getLogger(ActivityLogOperations.class);
 
 	@Autowired private ActivityLogDAO activityLogDAO;
 	@Autowired private JMSMessageSender jmsMessageSender;

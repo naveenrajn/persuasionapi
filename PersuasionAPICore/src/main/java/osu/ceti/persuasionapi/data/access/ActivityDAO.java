@@ -1,7 +1,6 @@
 package osu.ceti.persuasionapi.data.access;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.Logger;
 import org.hibernate.SessionFactory;
 
 import osu.ceti.persuasionapi.core.exceptions.DatabaseException;
@@ -15,7 +14,7 @@ import osu.ceti.persuasionapi.data.model.Activity;
  */
 public class ActivityDAO {
 
-	private static final Log log = LogFactory.getLog(ActivityDAO.class);
+	private static final Logger log = Logger.getLogger(ActivityDAO.class);
 
 	private SessionFactory sessionFactory;
 
