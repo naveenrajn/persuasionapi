@@ -95,6 +95,10 @@
 		<property name="sessionFactory" ref="sessionFactory" />
 	</bean>
 	
+	<bean id="ruleQueueMappingDAO" class="osu.ceti.persuasionapi.data.access.RuleQueueMappingDAO">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+	
 	<bean id="ruleDAO" class="osu.ceti.persuasionapi.data.access.RuleDAO">
 		<property name="sessionFactory" ref="sessionFactory" />
 	</bean>

@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import osu.ceti.persuasionapi.core.exceptions.PersuasionAPIException;
+import osu.ceti.persuasionapi.core.helpers.StringHelper;
 import osu.ceti.persuasionapi.services.ControllerTemplate;
 import osu.ceti.persuasionapi.services.RestServiceResponse;
 import osu.ceti.persuasionapi.services.external.ActivityServices;
@@ -39,13 +40,24 @@ public class ActivityServicesController extends ControllerTemplate {
 			@RequestBody RestServiceRequest<ReportActivityRequest> request) {
 		try {
 			ReportActivityRequest requestData = (ReportActivityRequest) request.getData();
-			//ReportActivityRequest requestData = request;
+			validateFieldsForReportUserActivity(requestData);
+			
 			activityServices.reportUserActivity(requestData.getUserId(), 
 					requestData.getActivityName(), requestData.getValue());
 			return successResponse();
 		} catch(PersuasionAPIException e) {
 			return failureResponse("1001", e);
 		}
+	}
+	
+	private void validateFieldsForReportUserActivity(ReportActivityRequest requestData)
+			throws PersuasionAPIException {
+		if(requestData == null)
+			throw new PersuasionAPIException("1000", "Invalid request data");
+		if(StringHelper.isEmpty(requestData.getUserId()))
+			throw new PersuasionAPIException("1000", "A value is expected for userId");
+		if(StringHelper.isEmpty(requestData.getActivityName()))
+			throw new PersuasionAPIException("1000", "A value is expected for activityName");
 	}
 
 }

@@ -1,5 +1,7 @@
 package osu.ceti.persuasionapi.core.operations;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -14,6 +16,22 @@ public class RuleOperations {
 
 	public Rule lookupRule(Integer ruleId) throws DatabaseException {
 		return ruleDAO.findById(ruleId);
+	}
+
+	public List<Rule> getAllTopLevelRules() throws DatabaseException {
+		return ruleDAO.getAllTopLevelRules();
+	}
+
+	public Rule getRuleByRuleId(Integer ruleId) throws DatabaseException {
+		return ruleDAO.findById(ruleId);
+	}
+
+	public Rule persistRule(Rule rule) throws DatabaseException {
+		return ruleDAO.merge(rule);
+	}
+
+	public void deleteRule(osu.ceti.persuasionapi.data.model.Rule rule) {
+		ruleDAO.delete(rule);
 	}
 
 }

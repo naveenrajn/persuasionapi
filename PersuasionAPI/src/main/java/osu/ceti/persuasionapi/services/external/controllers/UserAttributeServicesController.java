@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import osu.ceti.persuasionapi.core.exceptions.PersuasionAPIException;
+import osu.ceti.persuasionapi.core.helpers.StringHelper;
 import osu.ceti.persuasionapi.data.model.UserAttributeValue;
 import osu.ceti.persuasionapi.services.ControllerTemplate;
 import osu.ceti.persuasionapi.services.RestServiceResponse;
@@ -35,6 +36,7 @@ public class UserAttributeServicesController extends ControllerTemplate {
 			RestServiceRequest<UpdateUserAttributeRequest> request) {
 		try {
 			UpdateUserAttributeRequest requestData = request.getData();
+			validateFieldsForUpdteUserAttributeValues(requestData);
 			
 			//TODO: Find if there is a way to do batch update
 			for(UserAttribute attribute : requestData.getAttributes()) {
@@ -48,6 +50,25 @@ public class UserAttributeServicesController extends ControllerTemplate {
 		}
 	}
 	
+	private void validateFieldsForUpdteUserAttributeValues(UpdateUserAttributeRequest requestData)
+			throws PersuasionAPIException {
+		if(requestData == null) throw new PersuasionAPIException("1000", "Invalid request data");
+		if(StringHelper.isEmpty(requestData.getUserId()))
+			throw new PersuasionAPIException("1000", "A value is expected for userId");
+		if(requestData.getAttributes() == null || requestData.getAttributes().size()==0)
+			throw new PersuasionAPIException("1000", "Atleast one attribute is expected for updating");
+		
+		boolean foundAtleastOneNonEmptyAttributeToUpdate = false;
+		for(UserAttribute userAttribute: requestData.getAttributes()) {
+			if(StringHelper.isNotEmpty(userAttribute.getAttributeName())) {
+				foundAtleastOneNonEmptyAttributeToUpdate = true;
+				break;
+			}
+		}
+		if(!foundAtleastOneNonEmptyAttributeToUpdate)
+			throw new PersuasionAPIException("1000", "Atleast one valid attribute is expected for updating");
+	}
+	
 	/**
 	 * Fetches and returns the value of an attribute for a given user
 	 * @param request
@@ -59,6 +80,7 @@ public class UserAttributeServicesController extends ControllerTemplate {
 			RestServiceRequest<GetUserAttributeReqest> request) {
 		try {
 			GetUserAttributeReqest requestData = request.getData();
+			validateFieldsForGetUserAttributeValue(requestData);
 			
 			UserAttributeValue attributeValue = userAttributeServices.getUserAttributeValue(
 					requestData.getUserId(), requestData.getAttributeName());
@@ -78,6 +100,15 @@ public class UserAttributeServicesController extends ControllerTemplate {
 		} catch (PersuasionAPIException e) {
 			return failureResponse("1001", e);
 		}
+	}
+	
+	private void validateFieldsForGetUserAttributeValue(GetUserAttributeReqest requestData)
+			throws PersuasionAPIException {
+		if(requestData==null) throw new PersuasionAPIException("1000", "Invalid request data");
+		if(StringHelper.isEmpty(requestData.getUserId()))
+			throw new PersuasionAPIException("1000", "A value is expected for userId");
+		if(StringHelper.isEmpty(requestData.getAttributeName()))
+			throw new PersuasionAPIException("1000", "A value is expected for attributeName");
 	}
 	
 }

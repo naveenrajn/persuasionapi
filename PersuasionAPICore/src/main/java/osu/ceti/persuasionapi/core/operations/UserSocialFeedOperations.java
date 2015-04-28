@@ -85,4 +85,12 @@ public class UserSocialFeedOperations {
 		return null;
 	}
 
+	public void removeAllNotificationsForBadge(Integer badgeId) throws DatabaseException {
+		userSocialNotificationDAO.removeAllNotificationsForBadge(badgeId);
+	}
+
+	public void removeAllNotificationsForRule(Integer ruleId) throws DatabaseException {
+		userSocialNotificationDAO.removeAllNotificationsForRule(ruleId);
+	}
+
 }

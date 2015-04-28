@@ -11,7 +11,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 public class SocialNotification {
 
 	String notificationText;
-	Date timeStamp;
+	Date timestamp;
 
 	public String getNotificationText() {
 		return notificationText;
@@ -21,13 +21,13 @@ public class SocialNotification {
 	}
 	
 	@JsonSerialize(using = CustomDateSerializer.class)
-	public Date getTimeStamp() {
-		return timeStamp;
+	public Date getTimestamp() {
+		return timestamp;
 	}
 	
 	@JsonDeserialize(using = CustomDateDeserializer.class)
-	public void setTimeStamp(Date timeStamp) {
-		this.timeStamp = timeStamp;
+	public void setTimestamp(Date timestamp) {
+		this.timestamp = timestamp;
 	}
 
 }

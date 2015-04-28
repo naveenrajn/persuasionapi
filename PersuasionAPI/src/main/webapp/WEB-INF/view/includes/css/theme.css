@@ -1,0 +1,92 @@
+/* body {
+  padding-top: 70px;
+  padding-bottom: 30px;
+}
+
+.theme-dropdown .dropdown-menu {
+  position: static;
+  display: block;
+  margin-bottom: 20px;
+}
+
+.theme-showcase > p > .btn {
+  margin: 5px 0;
+}
+
+.theme-showcase .navbar .container {
+  width: auto;
+}
+
+.form-inline .form-group{
+    margin-left: 0;
+    margin-right: 0;
+}
+
+.row .form-group{
+    margin-left: 0;
+    margin-right: 0;
+} */
+
+body {
+  padding-bottom: 30px;
+}
+
+.homepage-content .row {
+	margin-left: 5px;
+}
+
+#createOrEditRuleModal .modal-dialog
+{
+	min-width:900px;
+  	width: 70%;
+  	overflow: auto;
+}
+
+.aria-template, .aria-removed, .aria-hidden {
+	display: none;
+}
+
+.popover {
+    z-index: 9999;
+    position: fixed;
+}
+
+.rule-row-clickable {
+	display:block;
+	cursor: pointer;
+}
+
+.table-nonfluid {
+	width: auto;
+}
+
+#rules-table .row, #container {
+	margin-right: 20px;
+}
+
+#rules-table .rule-row, #rules-table .table-header {
+	padding-right: 10px;
+  	padding-top: 3px;
+  	padding-bottom: 3px;
+}
+
+#rules-table .table-header {
+	font-weight: bold;
+	border-bottom: 1px solid #EEE;
+}
+
+#rules-table .rule-row {
+	background-color: #F9F9F9;
+}
+
+#rules-table .rule-row:hover, #rules-table .rule-row.rule-details-open:hover {
+    background-color: #E6E6E6;
+} 
+
+#rules-table .rule-row.rule-details-open {
+	background-color: #EDEDED;
+}
+
+#rules-table .rule-row, #rules-table .table-header {
+	margin-bottom: 1px;
+}

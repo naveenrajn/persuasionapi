@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import osu.ceti.persuasionapi.core.exceptions.DatabaseException;
 import osu.ceti.persuasionapi.core.exceptions.PersuasionAPIException;
+import osu.ceti.persuasionapi.core.helpers.StringHelper;
 import osu.ceti.persuasionapi.data.model.Badge;
 import osu.ceti.persuasionapi.services.ControllerTemplate;
 import osu.ceti.persuasionapi.services.RestServiceResponse;
@@ -38,6 +39,8 @@ public class BadgeServicesController extends ControllerTemplate {
 		try {
 			//TODO: Add authentication
 			GetUserBadgeRequest requestData = request.getData();
+			validateFieldsForGetUserBadgeForClass(requestData);
+			
 			Badge badge = badgeServices.getUserBadgeForBadgeClass(requestData.getUserId(), 
 					requestData.getBadgeClass());
 			
@@ -56,6 +59,15 @@ public class BadgeServicesController extends ControllerTemplate {
 		}
 	}
 	
+	private void validateFieldsForGetUserBadgeForClass(GetUserBadgeRequest requestData)
+			throws PersuasionAPIException {
+		if(requestData == null) throw new PersuasionAPIException("1000", "Invalid request data");
+		if(StringHelper.isEmpty(requestData.getUserId()))
+			throw new PersuasionAPIException("1000", "A value is expected for userId");
+		if(StringHelper.isEmpty(requestData.getBadgeClass()))
+			throw new PersuasionAPIException("1000", "A value is expected for badgeClass");
+	}
+	
 	/**
 	 * Fetches and returns all badges for a given user
 	 * @param request
@@ -67,6 +79,8 @@ public class BadgeServicesController extends ControllerTemplate {
 		try {
 			//TODO: Add authentication
 			String userId = request.getData();
+			validateFieldsForGetAllBadgesForUser(userId);
+			
 			List<Badge> badgesList = badgeServices.getAllBadgesForUser(userId);
 			List<GetUserBadgeResponse> responseData = new ArrayList<GetUserBadgeResponse>();
 			for(Badge badge : badgesList) {
@@ -76,6 +90,11 @@ public class BadgeServicesController extends ControllerTemplate {
 		} catch(PersuasionAPIException e) {
 			return failureResponse("1001", e);
 		}
+	}
+	
+	private void validateFieldsForGetAllBadgesForUser(String userId) throws PersuasionAPIException {
+		if(StringHelper.isEmpty(userId))
+			throw new PersuasionAPIException("1000", "A value is expected for 'data' with User ID");
 	}
 	
 	/**

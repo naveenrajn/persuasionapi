@@ -78,6 +78,7 @@ public class ComparisonVauleReplacer {
 			if(replacementString == null) {
 				allReplacementsFound = false;
 				text.replace(matcher.start()-offset, matcher.end()-offset, "null");
+				offset += stringToBeRaplaced.length() - 4;
 			} else {
 				text.replace(matcher.start()-offset, matcher.end()-offset, replacementString);
 				offset += (stringToBeRaplaced.length() - replacementString.length());

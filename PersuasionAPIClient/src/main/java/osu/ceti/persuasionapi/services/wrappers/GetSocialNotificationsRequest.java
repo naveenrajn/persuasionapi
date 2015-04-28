@@ -3,7 +3,7 @@ package osu.ceti.persuasionapi.services.wrappers;
 public class GetSocialNotificationsRequest {
 
 	String userId;
-	String timeStamp;
+	String timestamp;
 
 	public String getUserId() {
 		return userId;
@@ -11,11 +11,10 @@ public class GetSocialNotificationsRequest {
 	public void setUserId(String userId) {
 		this.userId = userId;
 	}
-	public String getTimeStamp() {
-		return timeStamp;
+	public String getTimestamp() {
+		return timestamp;
 	}
-	public void setTimeStamp(String timeStamp) {
-		this.timeStamp = timeStamp;
+	public void setTimestamp(String timestamp) {
+		this.timestamp = timestamp;
 	}
-	
 }

@@ -13,10 +13,12 @@ import org.springframework.stereotype.Component;
 
 import osu.ceti.persuasionapi.core.exceptions.DatabaseException;
 import osu.ceti.persuasionapi.core.exceptions.PersuasionAPIException;
+import osu.ceti.persuasionapi.core.helpers.ComparisonVauleReplacer;
 import osu.ceti.persuasionapi.core.helpers.Constants;
 import osu.ceti.persuasionapi.core.helpers.JMSMessageSender;
 import osu.ceti.persuasionapi.data.access.UserBadgeMappingDAO;
 import osu.ceti.persuasionapi.data.access.UserDAO;
+import osu.ceti.persuasionapi.data.model.ActivityLog;
 import osu.ceti.persuasionapi.data.model.Badge;
 import osu.ceti.persuasionapi.data.model.User;
 import osu.ceti.persuasionapi.data.model.UserBadgeMapping;
@@ -34,6 +36,7 @@ public class UserBadgeOperations {
 	
 	@Autowired private JMSMessageSender jmsMessageSender;
 	@Autowired private JmsTemplate jmsTemplate;
+	@Autowired ComparisonVauleReplacer comparisonValueProvider;
 	
 	@Autowired UserSocialFeedOperations userSocialFeedOperations;
 	
@@ -72,10 +75,12 @@ public class UserBadgeOperations {
 	 * Assigns the specified badge to the user with the given userId
 	 * @param userId
 	 * @param badge
+	 * @param userAttributes 
+	 * @param activityLogs 
 	 * @throws PersuasionAPIException 
 	 */
-	public void assignBadgeForUser(String userId, 
-			Badge badge) throws PersuasionAPIException {
+	public void assignBadgeForUser(String userId,  Badge badge, Map<String, ActivityLog> activityLogs, 
+			Map<String, String> userAttributes) throws PersuasionAPIException {
 		UserBadgeMappingId searchCriteriaId = new UserBadgeMappingId();
 		searchCriteriaId.setUser(new User(userId));
 		searchCriteriaId.setBadgeClass(badge.getBadgeClass());
@@ -99,8 +104,9 @@ public class UserBadgeOperations {
 		userBadgeDAO.merge(userBadgeMapping);
 		
 		if(newBadgeAssignment) {
-			sendEmailNotification(userId, badge);
-			postSocialFeedNotification(userId, badge, badge.getPublicRecognition());
+			sendEmailNotification(userId, badge, activityLogs, userAttributes);
+			postSocialFeedNotification(userId, badge, badge.getPublicRecognition(), 
+					activityLogs, userAttributes);
 		}
 	}
 	
@@ -108,8 +114,11 @@ public class UserBadgeOperations {
 	 * Posts notifications to the email queue
 	 * @param userId
 	 * @param badge
+	 * @param userAttributes 
+	 * @param activityLogs 
 	 */
-	private void sendEmailNotification(String userId, Badge badge) {
+	private void sendEmailNotification(String userId, Badge badge, 
+			Map<String, ActivityLog> activityLogs, Map<String, String> userAttributes) {
 		if(StringHelper.isEmpty(userId) ||
 				StringHelper.isEmpty(badge.getEmailSubject()) || 
 				StringHelper.isEmpty(badge.getEmailMsg())) {
@@ -118,8 +127,31 @@ public class UserBadgeOperations {
 		
 		Map<String, String> messageMap = new HashMap<String, String>();
 		messageMap.put(Constants.USER_ID, userId);
-		messageMap.put(Constants.EMAIL_SUBJECT, badge.getEmailSubject());
-		messageMap.put(Constants.EMAIL_BODY, badge.getEmailMsg());
+		
+		StringBuffer processedEmailSubject = new StringBuffer(badge.getEmailSubject());
+		boolean replacementResult = comparisonValueProvider.replaceAllValues(
+				processedEmailSubject, activityLogs, userAttributes);
+		if(!replacementResult) {
+			log.error("Error building email notification for user " + userId
+					+ ". Not all replacement values are available to build "
+					+ "the notification text");
+			log.error("Erroneous notification: " + processedEmailSubject);
+			return;
+		}
+		
+		messageMap.put(Constants.EMAIL_SUBJECT, processedEmailSubject.toString());
+		
+		StringBuffer processedEmailMessage = new StringBuffer(badge.getEmailMsg());
+		replacementResult = comparisonValueProvider.replaceAllValues(
+				processedEmailMessage, activityLogs, userAttributes);
+		if(!replacementResult) {
+			log.error("Error building email notification for user " + userId
+					+ ". Not all replacement values are available to build "
+					+ "the notification text");
+			log.error("Erroneous notification: " + processedEmailMessage);
+			return;
+		}
+		messageMap.put(Constants.EMAIL_BODY, processedEmailMessage.toString());
 		
 		jmsMessageSender.sendJMSMessage(jmsTemplate, userEmailQueueName, messageMap);
 	}
@@ -128,17 +160,38 @@ public class UserBadgeOperations {
 	 * Logs social feed notifications
 	 * @param userId
 	 * @param notificationText
+	 * @param userAttributes 
+	 * @param activityLogs 
 	 * @throws PersuasionAPIException
 	 */
 	private void postSocialFeedNotification(String userId, Badge badge,
-			String notificationText) 
+			String notificationText, Map<String, ActivityLog> activityLogs, Map<String, String> userAttributes) 
 		throws PersuasionAPIException {
 		if(StringHelper.isEmpty(userId) || badge == null ||
 				StringHelper.isEmpty(notificationText)) {
 			return;
 		}
 		
+		StringBuffer processedNotificationText = new StringBuffer(notificationText);
+		boolean replacementResult = comparisonValueProvider.replaceAllValues(
+				processedNotificationText, activityLogs, userAttributes);
+		if(!replacementResult) {
+			log.error("Error building social feed notifications for user " + userId
+					+ " for badge " + badge.getBadgeId() + ". Not all replacement values"
+					+ "are available to build the notification text");
+			log.error("Erroneous notification: " + processedNotificationText);
+			return;
+		}
 		userSocialFeedOperations.logSocialNotification(userId, null,
-				badge.getBadgeId(), notificationText);
+				badge.getBadgeId(), processedNotificationText.toString());
+	}
+
+	public void updateBadgeClass(String oldClassName, String newClassName) 
+			throws DatabaseException {
+		userBadgeDAO.updateBadgeClass(oldClassName, newClassName);
+	}
+
+	public void removeAllAssignmentsForBadge(Integer badgeId) throws DatabaseException {
+		userBadgeDAO.removeAllAssignmentsForBadge(badgeId);
 	}
 }

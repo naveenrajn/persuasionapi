@@ -7,6 +7,8 @@ import org.hibernate.LockMode;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Example;
 
+import osu.ceti.persuasionapi.core.exceptions.DatabaseException;
+import osu.ceti.persuasionapi.core.helpers.StringHelper;
 import osu.ceti.persuasionapi.data.model.RuleComparator;
 
 /**
@@ -113,6 +115,23 @@ public class RuleComparatorDAO {
 		} catch (RuntimeException re) {
 			log.error("find by example failed", re);
 			throw re;
+		}
+	}
+
+	public List getAllRuleComparators() throws DatabaseException {
+		log.debug("retrieving all RuleComparator instances");
+		try {
+			List results = 
+					sessionFactory.getCurrentSession().createCriteria(RuleComparator.class).list();
+			log.debug("retrieve all RuleComparator instance succesful, result size: "
+					+ results.size());
+			return results;
+		} catch (Exception e) {
+			log.error("Failed to retrieve all RuleComparator instances"
+					+ ". Exception type: " + e.getClass().getName()
+					+ ". Exception message: " + e.getMessage());
+			log.debug(StringHelper.stackTraceToString(e));
+			throw new DatabaseException("Failed to retrieve all Rule Comparators from database", e);
 		}
 	}
 }

@@ -4,9 +4,12 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.hibernate.LockMode;
+import org.hibernate.Query;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Example;
 
+import osu.ceti.persuasionapi.core.exceptions.DatabaseException;
+import osu.ceti.persuasionapi.core.helpers.StringHelper;
 import osu.ceti.persuasionapi.data.model.RuleAction;
 
 /**
@@ -67,16 +70,19 @@ public class RuleActionDAO {
 		}
 	}
 
-	public RuleAction merge(RuleAction detachedInstance) {
+	public RuleAction merge(RuleAction detachedInstance) throws DatabaseException {
 		log.debug("merging RuleAction instance");
 		try {
 			RuleAction result = (RuleAction) sessionFactory.getCurrentSession()
 					.merge(detachedInstance);
 			log.debug("merge successful");
 			return result;
-		} catch (RuntimeException re) {
-			log.error("merge failed", re);
-			throw re;
+		} catch (Exception e) {
+			log.error("Failed to create/update rule action" + detachedInstance.toString()
+					+ ". Exception type: " + e.getClass().getName()
+					+ ". Exception message: " + e.getMessage());
+			log.debug(StringHelper.stackTraceToString(e));
+			throw new DatabaseException("Failed to update rule action for rule", e);
 		}
 	}
 
@@ -94,6 +100,42 @@ public class RuleActionDAO {
 		} catch (RuntimeException re) {
 			log.error("find by example failed", re);
 			throw re;
+		}
+	}
+
+	public void nullifyAllAssignmentsForBadge(Integer badgeId) throws DatabaseException {
+		log.debug("setting all action mappings for badge to null");
+		try {
+			Query query = sessionFactory.getCurrentSession().createQuery(
+					"update RuleAction set badge.badgeId=:newValue where badge.badgeId=:oldValue");
+			query.setParameter("oldValue", badgeId);
+			query.setParameter("newValue", null);
+			query.executeUpdate();
+			log.debug("setting all action mappings for badge to null. Badge Id: " + badgeId); 
+		} catch (Exception e) {
+			log.error("Failed to update null action mappings. Badge Id: " + badgeId 
+					+ ". Exception type: " + e.getClass().getName()
+					+ ". Exception message: " + e.getMessage());
+			log.debug(StringHelper.stackTraceToString(e));
+			throw new DatabaseException("Failed update badge class: " + e.getMessage());
+		}
+	}
+
+	public void deleteAllActionsForRule(Integer ruleId) throws DatabaseException {
+		log.debug("deleting all rule actions for rule");
+		try {
+			String queryString = "delete from RuleAction where ruleId=:ruleId";
+			Query query = sessionFactory.getCurrentSession().createQuery(queryString);
+			query.setParameter("ruleId", ruleId);
+			query.executeUpdate();
+			log.debug("delete all rule actions for rule succesful. Rule ID: " + ruleId); 
+		} catch (Exception e) {
+			log.error("Failed to delete rule actions for rule: " + ruleId 
+					+ ". Exception type: " + e.getClass().getName()
+					+ ". Exception message: " + e.getMessage());
+			log.debug(StringHelper.stackTraceToString(e));
+			throw new DatabaseException("Failed to delete rule actions for rule: " + ruleId
+					+ ". Error: " + e.getMessage());
 		}
 	}
 }

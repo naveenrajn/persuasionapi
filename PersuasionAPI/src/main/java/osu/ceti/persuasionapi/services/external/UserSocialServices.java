@@ -22,9 +22,8 @@ public class UserSocialServices {
 
 	@Autowired UserSocialFeedOperations userSocialFeedOperations;
 	
-	public List<UserSocialNotification> getUserSocialNotificationsAfterTime(String userId, String timeStamp) throws PersuasionAPIException {
+	public List<UserSocialNotification> getUserSocialNotificationsAfterTime(String userId, Date startTime) throws PersuasionAPIException {
 		try {
-			Date startTime = StringHelper.toDateFromCharString(timeStamp);
 			return userSocialFeedOperations.getNotifications(userId, startTime);
 		} catch (PersuasionAPIException e) {
 			log.error("Failed to process getUserSocialNotificationsAfterTime");
@@ -33,6 +32,7 @@ public class UserSocialServices {
 			log.error("Caught exception while processing getUserSocialNotificationsAfterTime"
 					+ ". Exception type: " + e.getClass().getName()
 					+ ". Exception message: " + e.getMessage());
+			log.error(StringHelper.stackTraceToString(e));
 			throw new PersuasionAPIException(InternalErrorCodes.GENERATED_EXCEPTION
 					, "Failed to retrieve social notifications for user");
 		}

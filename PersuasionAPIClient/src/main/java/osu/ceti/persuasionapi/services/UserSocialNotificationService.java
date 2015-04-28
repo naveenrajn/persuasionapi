@@ -34,7 +34,7 @@ public class UserSocialNotificationService {
 			Date timeStamp) throws PersuasionAPIException {
 		GetSocialNotificationsRequest requestData = new GetSocialNotificationsRequest();
 		requestData.setUserId(userId);
-		requestData.setTimeStamp(StringHelper.dateToString(timeStamp));
+		requestData.setTimestamp(StringHelper.dateToString(timeStamp));
 		
 		RestServiceRequest<GetSocialNotificationsRequest> request = 
 				new RestServiceRequest<GetSocialNotificationsRequest>();

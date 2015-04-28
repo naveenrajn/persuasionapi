@@ -7,8 +7,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import osu.ceti.persuasionapi.core.exceptions.PersuasionAPIException;
 import osu.ceti.persuasionapi.core.helpers.InternalErrorCodes;
+import osu.ceti.persuasionapi.core.helpers.StringHelper;
 import osu.ceti.persuasionapi.core.operations.UserAttributeOperations;
 import osu.ceti.persuasionapi.core.operations.UserOperations;
+import osu.ceti.persuasionapi.data.model.User;
+import osu.ceti.persuasionapi.data.model.UserAttribute;
 import osu.ceti.persuasionapi.data.model.UserAttributeValue;
 
 @Service
@@ -56,14 +59,18 @@ public class UserAttributeServices {
 	public UserAttributeValue getUserAttributeValue(String userId, String attributeName) 
 			throws PersuasionAPIException {
 		try {
-			return userAttributeOperations.getUserAttribute(userId, attributeName);
+			User user = userOperations.lookupUser(userId);
+			UserAttribute userAttribute = userAttributeOperations.lookupUserAttribute(attributeName);
+			return userAttributeOperations.getUserAttribute(user, userAttribute);
 		} catch (PersuasionAPIException e) {
 			log.error("Failed to process updateUserAttribute");
+			log.debug(StringHelper.stackTraceToString(e));
 			throw e;
 		} catch(Exception e) {
 			log.error("Caught exception while processing getUserAttributeValue"
 					+ ". Exception type: " + e.getClass().getName()
 					+ ". Exception message: " + e.getMessage());
+			log.debug(StringHelper.stackTraceToString(e));
 			throw new PersuasionAPIException(InternalErrorCodes.GENERATED_EXCEPTION
 					, "Failed to retrieve user attribute value");
 		}

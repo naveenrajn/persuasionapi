@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import osu.ceti.persuasionapi.core.exceptions.PersuasionAPIException;
 import osu.ceti.persuasionapi.core.helpers.InternalErrorCodes;
+import osu.ceti.persuasionapi.core.helpers.StringHelper;
 import osu.ceti.persuasionapi.core.operations.ActivityLogOperations;
 import osu.ceti.persuasionapi.core.operations.ActivityOperations;
 import osu.ceti.persuasionapi.core.operations.UserOperations;
@@ -50,6 +51,7 @@ public class ActivityServices {
 			log.error("Caught exception while processing reportUserActivity"
 					+ ". Exception type: " + e.getClass().getName()
 					+ ". Exception message: " + e.getMessage());
+			log.debug(StringHelper.stackTraceToString(e));
 			throw new PersuasionAPIException(InternalErrorCodes.GENERATED_EXCEPTION
 					, "Failed to report user activity to the Persuasion API");
 		}

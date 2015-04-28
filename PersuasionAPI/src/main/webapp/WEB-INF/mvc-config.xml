@@ -18,6 +18,8 @@
 	        <property name="suffix" value=".jsp"/>
 	</bean>
 	
+	<mvc:resources mapping="/resources/**" location="/WEB-INF/view/includes/" />
+	
 	<!-- Configure to plugin JSON as request and response in method handler -->
     <bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter">
         <property name="messageConverters">

@@ -4,9 +4,12 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.hibernate.LockMode;
+import org.hibernate.Query;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Example;
 
+import osu.ceti.persuasionapi.core.exceptions.DatabaseException;
+import osu.ceti.persuasionapi.core.helpers.StringHelper;
 import osu.ceti.persuasionapi.data.model.RuleQueueMapping;
 
 /**
@@ -67,16 +70,19 @@ public class RuleQueueMappingDAO {
 		}
 	}
 
-	public RuleQueueMapping merge(RuleQueueMapping detachedInstance) {
+	public RuleQueueMapping merge(RuleQueueMapping detachedInstance) throws DatabaseException {
 		log.debug("merging RuleQueueMapping instance");
 		try {
 			RuleQueueMapping result = (RuleQueueMapping) sessionFactory
 					.getCurrentSession().merge(detachedInstance);
 			log.debug("merge successful");
 			return result;
-		} catch (RuntimeException re) {
-			log.error("merge failed", re);
-			throw re;
+		} catch (Exception e) {
+			log.error("Failed to create/update rule queue mapping" + detachedInstance.toString()
+					+ ". Exception type: " + e.getClass().getName()
+					+ ". Exception message: " + e.getMessage());
+			log.debug(StringHelper.stackTraceToString(e));
+			throw new DatabaseException("Failed to update custom queue mapping for rule", e);
 		}
 	}
 
@@ -116,4 +122,23 @@ public class RuleQueueMappingDAO {
 			throw re;
 		}
 	}
+
+	public void deleteAllQueuesForRule(Integer ruleId) throws DatabaseException {
+		log.debug("deleting all custom JMS queues for rule");
+		try {
+			String queryString = "delete from RuleQueueMapping where id.rule.ruleId=:ruleId";
+			Query query = sessionFactory.getCurrentSession().createQuery(queryString);
+			query.setParameter("ruleId", ruleId);
+			query.executeUpdate();
+			log.debug("delete all custom JMS queues for rule succesful. Rule ID: " + ruleId); 
+		} catch (Exception e) {
+			log.error("Failed to delete queues for rule: " + ruleId 
+					+ ". Exception type: " + e.getClass().getName()
+					+ ". Exception message: " + e.getMessage());
+			log.debug(StringHelper.stackTraceToString(e));
+			throw new DatabaseException("Failed to delete invalid rule comparisons for rule: " + ruleId
+					+ ". Error: " + e.getMessage());
+		}
+	}
+	
 }

@@ -87,6 +87,7 @@ public class UserAttributeValueDAO {
 			osu.ceti.persuasionapi.data.model.UserAttributeValueId id) throws DatabaseException {
 		log.debug("getting UserAttributeValue instance with id: " + id);
 		try {
+			System.out.println("ID: " + id.getUser());
 			UserAttributeValue instance = (UserAttributeValue) sessionFactory
 					.getCurrentSession()
 					.get(UserAttributeValue.class, id);
@@ -138,4 +139,5 @@ public class UserAttributeValueDAO {
 			throw re;
 		}
 	}
+	
 }

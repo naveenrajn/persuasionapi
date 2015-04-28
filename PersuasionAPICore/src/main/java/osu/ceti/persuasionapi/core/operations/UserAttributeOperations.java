@@ -88,17 +88,17 @@ public class UserAttributeOperations {
 
 	/**
 	 * Fetches value of a given attribute for the given user
-	 * @param userId
-	 * @param attributeName
+	 * @param user2
+	 * @param userAttribute2
 	 * @return
 	 * @throws DatabaseException
 	 */
-	public UserAttributeValue getUserAttribute(String userId, String attributeName) throws DatabaseException {
-		User user = new User(userId);
-		UserAttribute userAttribute = new UserAttribute(attributeName);
+	public UserAttributeValue getUserAttribute(User user, UserAttribute userAttribute) throws DatabaseException {
 		UserAttributeValueId id = new UserAttributeValueId();
 		id.setUser(user);
 		id.setUserAttribute(userAttribute);
+		
+		if(user==null || userAttribute==null) return null;
 		
 		UserAttributeValue userAttributeValue = userAttributeValueDAO.findById(id);
 		return userAttributeValue;

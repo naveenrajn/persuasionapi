@@ -70,16 +70,19 @@ public class RuleDAO {
 		}
 	}
 
-	public Rule merge(Rule detachedInstance) {
+	public Rule merge(Rule detachedInstance) throws DatabaseException {
 		log.debug("merging Rule instance");
 		try {
 			Rule result = (Rule) sessionFactory.getCurrentSession().merge(
 					detachedInstance);
 			log.debug("merge successful");
 			return result;
-		} catch (RuntimeException re) {
-			log.error("merge failed", re);
-			throw re;
+		} catch (Exception e) {
+			log.error("Failed to create/update rule" + detachedInstance.toString()
+					+ ". Exception type: " + e.getClass().getName()
+					+ ". Exception message: " + e.getMessage());
+			log.debug(StringHelper.stackTraceToString(e));
+			throw new DatabaseException("Failed to update rule in database", e);
 		}
 	}
 
@@ -133,19 +136,21 @@ public class RuleDAO {
 		}
 	}
 	
-	public List getAllTopLevelRules() {
-		log.debug("retrieving all rules");
+	public List getAllTopLevelRules() throws DatabaseException {
+		log.debug("retrieving all top level rules");
 		try {
 			List results = sessionFactory.getCurrentSession()
 					.createCriteria(Rule.class).
 					add(Restrictions.isNull("parentRule")).list();
-			log.debug("getAllRules, result size: "
+			log.debug("getAllTopLevelRules, result size: "
 					+ results.size());
 			return results;
-		} catch (RuntimeException re) {
-			//TODO: Add appropriate exception handling
-			log.error("getAllRules failed", re);
-			throw re;
+		} catch (Exception e) {
+			log.error("retrieve all top level rules failed"
+					+ ". Exception type: " + e.getClass().getName()
+					+ ". Exception message: " + e.getMessage());
+			log.debug(StringHelper.stackTraceToString(e));
+			throw new DatabaseException("Failed to retrieve all top level rules from database", e);
 		}
 	}
 }

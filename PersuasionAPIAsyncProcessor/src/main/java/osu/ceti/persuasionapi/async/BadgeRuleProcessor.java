@@ -66,7 +66,7 @@ public class BadgeRuleProcessor {
 			processRule(userId, rule, activityLogs, userAttributes, badgesToBeAssigned);
 		}
 		
-		processBadgeAssignments(userId, badgesToBeAssigned);
+		processBadgeAssignments(userId, badgesToBeAssigned, activityLogs, userAttributes);
 	}
 	
 	/**
@@ -129,11 +129,12 @@ public class BadgeRuleProcessor {
 	 */
 	//TODO: Add badge removal logic. Is this required? Yes it is
 	private void processBadgeAssignments(String userId,
-			Map<String, Badge> badgesToBeAssigned) throws PersuasionAPIException {
+			Map<String, Badge> badgesToBeAssigned, Map<String, ActivityLog> activityLogs, 
+			Map<String, String> userAttributes) throws PersuasionAPIException {
 		if(!badgesToBeAssigned.isEmpty()) {
 			for(String badgeClass : badgesToBeAssigned.keySet()) {
 				Badge badge = badgesToBeAssigned.get(badgeClass);
-				userBadgeOperations.assignBadgeForUser(userId, badge);
+				userBadgeOperations.assignBadgeForUser(userId, badge, activityLogs, userAttributes);
 			}
 		}
 		//TODO: Identify and remove obsolete badges
